@@ -1,38 +1,76 @@
+body {
+  background: #eee;
+}
+
 .App {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.Page {
+  padding: 80px 24px;
+}
+
+.TitleText {
+  font-weight: 700;
+  font-size: 20px;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.SubtitleText {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.EmptyState {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  color: rgba(0, 0, 0, 0.3);
+  display: grid;
+  grid-gap: 60px;
   text-align: center;
+  justify-items: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.EmptyStateIcon {
+  font-size: 90px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.DeckView {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-gap: 10px;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  height: 100%;
 }
 
-.App-link {
-  color: #61dafb;
+.Card {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: 100%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.SideCard {
+  padding: 10px;
+  min-height: 80px;
+}
+
+.PreviewCard {
+  width: 200px;
+}
+
+.CardContent {
+  padding: 40px;
+}
+
+.CardTools {
+  background: rgba(0, 160, 255, 0.2);
+  padding: 10px;
+  display: grid;
+  justify-content: flex-end;
+  grid-template-columns: auto auto;
 }
