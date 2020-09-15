@@ -7,14 +7,18 @@ import Typography from '@material-ui/core/Typography';
 import Drawer from '@material-ui/core/Drawer';
 import EmptyState from './components/EmptyState';
 import DeckView from './components/DeckView';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItem';
 import './App.css';
 
 function App() {
-  const testDeck = ({
+  const testDecks = ([{
     name: "Test Deck",
+    created: "2020-09-07T23:19:39.511Z",
     cards: [
       {
-        front: "First card.",
+        front: "<mark>card.</mark>",
         back: "First card back."
       },
       {
@@ -30,12 +34,28 @@ function App() {
         back: "4 back"
       }
     ]
-  });
+  }]);
 
-  const [deck, setDeck] = useState(testDeck);
+  useEffect(() => { setDecks(testDecks) }, []);
+  useEffect(() => { setSelectedDeck(testDecks[0]) }, []);
+
+  const [decks, setDecks] = useState(null);
+  const [selectedDeck, setSelectedDeck] = useState(null);
   const [drawer, setDrawer] = useState(false);
 
   const toggleDrawer = (open) => (event) => { setDrawer(open); }
+
+  const drawerContent = (
+    <div className="Drawer">
+      <List>
+        {decks ? decks.map((deck) => 
+          <ListItem>
+            <ListItemText primary={deck.name} secondary={deck.created} />
+          </ListItem>
+        ) : ""}
+      </List>
+    </div>
+  );
 
   const deckTitle = (
     <React.Fragment>
@@ -43,13 +63,13 @@ function App() {
         bCards
       </span>
       <Typography className="SubtitleText" variant="h6">
-        {"\xa0\xa0—\xa0\xa0" + (deck ? deck.name : "no deck loaded")}
+        {"\xa0\xa0—\xa0\xa0" + (selectedDeck ? selectedDeck.name : "no deck loaded")}
       </Typography>
     </React.Fragment>
   );
 
   const content = (
-    deck ? <DeckView deck={deck}/> :
+    selectedDeck ? <DeckView deck={selectedDeck}/> :
     <EmptyState>Select a Deck from the drawer to get started.</EmptyState>
   );
 
@@ -65,6 +85,7 @@ function App() {
       </AppBar>
       <div className="Page">
         <Drawer anchor="left" open={drawer} onClose={toggleDrawer(false)}>
+          {drawerContent}
         </Drawer>
         {content}
       </div>
