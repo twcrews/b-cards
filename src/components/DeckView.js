@@ -24,9 +24,7 @@ export default function DeckView(props) {
                     <Card className="SideCard">
                         {props.deck.cards[deckIndex - 1].front}
                     </Card> :
-                    ""
-                }
-            </div>
+                    <div />}
                 <Card elevation={6} className="Card">
                     <div className="CardContent">
                         {flipped ? props.deck.cards[deckIndex].back :
@@ -41,8 +39,7 @@ export default function DeckView(props) {
                         </IconButton>
                     </div>
                 </Card>
-            <div className="PreviewCard">
-                {deckIndex >= props.deck.cards.length - 1 ? "" :
+                {deckIndex >= props.deck.cards.length - 1 ? <div /> :
                 <Card className="SideCard">{props.deck.cards[deckIndex + 1].front}</Card>}
             </div>
             <Dialog open={dialogOpen} onClose={handleDialogClose}>

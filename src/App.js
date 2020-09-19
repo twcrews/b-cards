@@ -36,8 +36,8 @@ function App() {
     ]
   }]);
 
-  useEffect(() => { setDecks(testDecks) }, []);
-  useEffect(() => { setSelectedDeck(testDecks[0]) }, []);
+  useEffect(() => { setDecks(testDecks) }, [testDecks]);
+  useEffect(() => { setSelectedDeck(testDecks[0]) }, [testDecks]);
 
   const [decks, setDecks] = useState(null);
   const [selectedDeck, setSelectedDeck] = useState(null);
