@@ -1,59 +1,109 @@
 import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Card from '@material-ui/core/Card';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
+import BCard from './BCard.js';
+import ReactCardFlip from 'react-card-flip';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import ShuffleIcon from '@material-ui/icons/Shuffle';
 
 export default function DeckView(props) {
-    const [deckIndex, setDeckIndex] = useState(0);
-    const [flipped, setFlipped] = useState(false);
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [flipped, setFlipped] = useState(false);
+    const [selectedCard, setSelectedCard] = useState(0);
 
-    const handleDialogClose = () => { setDialogOpen(false) }
+    const handleDialogClose = () => { setDialogOpen(false); };
+    const handleFlip = () => { setFlipped(!flipped); };
+    const handleDelete = () => { setDialogOpen(true); };
+    const handleDeleteConfirm = () => {
+        props.onDelete();
+        setDialogOpen(false);
+    };
+    const handleCardChange = (content, editor) => {
+        props.onChange(content, editor, selectedCard, flipped);
+    };
+
+    const controls = (
+        <div className="DeckControls">
+            <ButtonGroup>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<ArrowBackIcon />}
+                >
+                    Back
+          </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<ShuffleIcon />}
+                >
+                    Shuffle
+          </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    endIcon={<ArrowForwardIcon />}
+                >
+                    Next
+          </Button>
+            </ButtonGroup>
+        </div>
+    );
 
     return (
-        <div className="DeckView">
-            <div className="PreviewCard">
-                {deckIndex > 0 ? 
-                    <Card className="SideCard">
-                        {props.deck.cards[deckIndex - 1].front}
-                    </Card> :
-                    <div />}
-                <Card elevation={6} className="Card">
-                    <div className="CardContent">
-                        {flipped ? props.deck.cards[deckIndex].back :
-                            props.deck.cards[deckIndex].front}
-                    </div>
-                    <div className="CardTools">
-                        <IconButton>
-                            <EditIcon/>
-                        </IconButton>
-                        <IconButton onClick={() => setDialogOpen(true)}>
-                            <DeleteIcon/>
-                        </IconButton>
-                    </div>
-                </Card>
-                {deckIndex >= props.deck.cards.length - 1 ? <div /> :
-                <Card className="SideCard">{props.deck.cards[deckIndex + 1].front}</Card>}
-            </div>
-            <Dialog open={dialogOpen} onClose={handleDialogClose}>
-                <DialogTitle>Delete this card?</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        This card will be deleted forever (a really long time).
+        <React.Fragment>
+            <div className="Cards">
+                <ReactCardFlip
+                    isFlipped={flipped}
+                    flipDirection="vertical"
+                    flipSpeedBackToFront={0.3}
+                    flipSpeedFrontToBack={0.3}
+                >
+                    <BCard
+                        id={props.deck.id + "-front-" + selectedCard}
+                        flipped={false}
+                        onChange={(content, editor) =>
+                            handleCardChange(content, editor)}
+                        onFlip={handleFlip}
+                        onDelete={handleDelete}
+                        number={selectedCard + 1}
+                        count={props.deck.cards.length}
+                    >
+                        {props.deck.cards[selectedCard].front}
+                    </BCard>
+                    <BCard
+                        id={props.deck.id + "-back-" + selectedCard}
+                        flipped={true}
+                        onChange={(content, editor) =>
+                            handleCardChange(content, editor)}
+                        onFlip={handleFlip}
+                        onDelete={handleDelete}
+                        number={selectedCard + 1}
+                        count={props.deck.cards.length}
+                    >
+                        {props.deck.cards[selectedCard].back}
+                    </BCard>
+                </ReactCardFlip>
+                <Dialog open={dialogOpen} onClose={handleDialogClose}>
+                    <DialogTitle>Delete this card?</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            This card will be deleted forever (a really long time).
                     </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleDialogClose}>Cancel</Button>
-                    <Button color="secondary" onClick={handleDialogClose}>Delete</Button>
-                </DialogActions>
-            </Dialog>
-        </div>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleDialogClose}>Cancel</Button>
+                        <Button color="secondary" onClick={handleDeleteConfirm}>Delete</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+            {controls}
+        </React.Fragment>
     );
 }

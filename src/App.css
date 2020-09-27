@@ -1,6 +1,7 @@
 body {
   background: #eee;
   margin: 0;
+  font-family: Roboto;
 }
 
 .App {
@@ -10,8 +11,17 @@ body {
   height: 100vh;
 }
 
+.AppTitle {
+  flex-grow: 1;
+  display: flex;
+  cursor: default;
+  overflow: hidden;
+}
+
 .Page {
-  padding: 80px 24px;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: 1fr auto;
 }
 
 .TitleText {
@@ -25,6 +35,31 @@ body {
   color: rgba(255, 255, 255, 0.5);
 }
 
+.Drawer {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  width: 240px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.EmptyDrawer {
+  display: grid;
+  align-items: center;
+  text-align: center;
+  color: #aaa;
+  height: 100%;
+}
+
+.DrawerButton {
+  height: 50px;
+}
+
+.DeckList {
+  height: 100%;
+  overflow-y: auto;
+}
+
 .EmptyState {
   top: 50%;
   left: 50%;
@@ -32,46 +67,78 @@ body {
   position: absolute;
   color: rgba(0, 0, 0, 0.3);
   display: grid;
-  grid-gap: 60px;
+  gap: 60px;
   text-align: center;
   justify-items: center;
+  cursor: default;
 }
 
 .EmptyStateIcon {
   font-size: 90px;
 }
 
-.DeckView {
+.DeckControls {
   display: grid;
-  grid-template-columns: auto auto auto;
-  grid-gap: 10px;
+  justify-content: center;
   align-items: center;
-  height: 100%;
+  grid-auto-flow: column;
+  padding: 20px;
+  gap: 20px;
+}
+
+.Cards {
+  display: grid;
+  padding: 60px 80px;
+  padding-bottom: 0;
 }
 
 .Card {
   display: grid;
-  grid-template-rows: 1fr auto;
-  align-items: center;
+  grid-template-rows: auto 1fr auto;
   height: 100%;
 }
 
-.SideCard {
-  padding: 10px;
-  min-height: 80px;
-}
-
-.PreviewCard {
-  width: 200px;
+.CardHeader {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: 20px 40px;
+  color: #888;
+  cursor: default;
+  border-bottom: 1px solid #ddd;
 }
 
 .CardContent {
+  display: grid;
+  align-items: center;
   padding: 40px;
+  overflow: auto;
+}
+
+.mce-content-body:hover {
+  background-color: #e6f2ff;
 }
 
 .CardTools {
-  background: rgba(0, 160, 255, 0.2);
   display: grid;
-  justify-content: flex-end;
-  grid-template-columns: auto auto;
+  grid-template-columns: 1fr auto auto;
+  border-top: 1px solid #ddd;
+  align-items: center;
+  padding: 5px 20px;
+}
+
+.ButtonContainer {
+  display: grid;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+
+
+
+
+@media screen and (max-width: 600px) {
+  .Cards {
+    padding: 0;
+  }
 }
