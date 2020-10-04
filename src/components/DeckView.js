@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useReducer } from 'react';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Dialog from '@material-ui/core/Dialog';
@@ -74,9 +74,8 @@ export default function DeckView(props) {
                         onDelete={handleDelete}
                         number={selectedCard + 1}
                         count={props.deck.cards.length}
-                    >
-                        {props.deck.cards[selectedCard].front}
-                    </BCard>
+                        content={props.deck.cards[selectedCard].front}
+                    />
                     <BCard
                         id={props.deck.id + "-back-" + selectedCard}
                         flipped={true}
@@ -86,9 +85,7 @@ export default function DeckView(props) {
                         onDelete={handleDelete}
                         number={selectedCard + 1}
                         count={props.deck.cards.length}
-                    >
-                        {props.deck.cards[selectedCard].back}
-                    </BCard>
+                        content={props.deck.cards[selectedCard].back}/>
                 </ReactCardFlip>
                 <Dialog open={dialogOpen} onClose={handleDialogClose}>
                     <DialogTitle>Delete this card?</DialogTitle>

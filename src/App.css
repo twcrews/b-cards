@@ -133,9 +133,19 @@ body {
   justify-content: flex-start;
 }
 
+.MuiMenuItem-root {
+  display: grid;
+  gap: 20px;
+}
 
+.GrayText {
+  color: #666;
+}
 
-
+.DialogGrid {
+  display: grid;
+  gap: 10px;
+}
 
 @media screen and (max-width: 600px) {
   .Cards {

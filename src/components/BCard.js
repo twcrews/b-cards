@@ -25,7 +25,7 @@ export default function BCard(props) {
                         id={props.id}
                         inline
                         onEditorChange={props.onChange}
-                        value={props.children}
+                        value={props.content}
                         init={{
                             menubar: false,
                             toolbar: 'undo redo | fontsizeselect | bold italic backcolor | ' +
