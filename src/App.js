@@ -133,6 +133,7 @@ function App() {
     handleDeckSelected(newObj.content);
   };
   const handleDeckSelected = (deck) => {
+    console.log("Deck selected. " + deck.cards[0].front);
     setDrawer(false);
     setDeck(JSON.parse(localStorage.getItem(deck.id)));
   };
@@ -296,7 +297,7 @@ function App() {
     deck ?
       <DeckView
         deck={deck}
-        onChange={
+        onCardChange={
           (content, editor, selected, flipped) =>
             handleCardChange(content, editor, selected, flipped)}
       /> :

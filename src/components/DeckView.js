@@ -25,7 +25,7 @@ export default function DeckView(props) {
         setDialogOpen(false);
     };
     const handleCardChange = (content, editor) => {
-        props.onChange(content, editor, selectedCard, flipped);
+        props.onCardChange(content, editor, selectedCard, flipped);
     };
 
     const controls = (
@@ -68,7 +68,7 @@ export default function DeckView(props) {
                     <BCard
                         id={props.deck.id + "-front-" + selectedCard}
                         flipped={false}
-                        onChange={(content, editor) =>
+                        onEditorChange={(content, editor) =>
                             handleCardChange(content, editor)}
                         onFlip={handleFlip}
                         onDelete={handleDelete}
@@ -79,7 +79,7 @@ export default function DeckView(props) {
                     <BCard
                         id={props.deck.id + "-back-" + selectedCard}
                         flipped={true}
-                        onChange={(content, editor) =>
+                        onEditorChange={(content, editor) =>
                             handleCardChange(content, editor)}
                         onFlip={handleFlip}
                         onDelete={handleDelete}

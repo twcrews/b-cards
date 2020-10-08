@@ -24,7 +24,7 @@ export default function BCard(props) {
                     <Editor
                         id={props.id}
                         inline
-                        onEditorChange={props.onChange}
+                        onEditorChange={props.onEditorChange}
                         value={props.content}
                         init={{
                             menubar: false,
