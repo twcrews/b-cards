@@ -10,6 +10,8 @@ import BCard from './BCard.js';
 import ReactCardFlip from 'react-card-flip';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import FirstPageIcon from '@material-ui/icons/FirstPage';
+import LastPageIcon from '@material-ui/icons/LastPage';
 import ShuffleIcon from '@material-ui/icons/Shuffle';
 
 export default function DeckView(props) {
@@ -30,6 +32,13 @@ export default function DeckView(props) {
 
     const controls = (
         <div className="DeckControls">
+            <Button
+                variant="contained"
+                color="primary"
+                startIcon={<FirstPageIcon/>}
+            >
+                First
+            </Button>
             <ButtonGroup>
                 <Button
                     variant="contained"
@@ -37,22 +46,29 @@ export default function DeckView(props) {
                     startIcon={<ArrowBackIcon />}
                 >
                     Back
-          </Button>
+                </Button>
                 <Button
                     variant="contained"
                     color="primary"
                     startIcon={<ShuffleIcon />}
                 >
                     Shuffle
-          </Button>
+                </Button>
                 <Button
                     variant="contained"
                     color="primary"
                     endIcon={<ArrowForwardIcon />}
                 >
                     Next
-          </Button>
+                </Button>
             </ButtonGroup>
+            <Button
+                variant="contained"
+                color="primary"
+                endIcon={<LastPageIcon/>}
+            >
+                Last
+            </Button>
         </div>
     );
 

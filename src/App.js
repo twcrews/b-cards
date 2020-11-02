@@ -45,7 +45,9 @@ function App() {
       i = keys.length;
 
     while (i--) {
-      storage.push(JSON.parse(localStorage.getItem(keys[i])));
+      if (keys[i] !== "lastOpen") {
+        storage.push(JSON.parse(localStorage.getItem(keys[i])));
+      }
     }
     return storage;
   };
@@ -62,6 +64,7 @@ function App() {
 
   useEffect(() => {
     setDeckList(allStorage());
+    setDeck(JSON.parse(localStorage.getItem(localStorage.getItem("lastOpen"))));
   }, []);
 
   const writeDeck = (newDeck) => {
@@ -84,7 +87,7 @@ function App() {
       { setDuplicateDeckDialogOpen(false); };
   const handleNewDeckNameChange = (event) => {
     var text = event.target.value;
-    text = text.substr(0, 20).replace(/[^0-9a-z_-\s]/gi, '');
+    text = text.substr(0, 20);//.replace(/[^0-9a-z_-\s]/gi, '');
     setNewDeckName(text);
   };
   const handleNewDeckConfirm = (event) => {
@@ -118,7 +121,7 @@ function App() {
       content: {
         id: newId,
         name: deckName,
-        created: formattedDate(),
+        created: new Date(),
         cards: [
           {
             front: "<p></p>",
@@ -136,6 +139,7 @@ function App() {
     console.log("Deck selected. " + deck.cards[0].front);
     setDrawer(false);
     setDeck(JSON.parse(localStorage.getItem(deck.id)));
+    localStorage.setItem("lastOpen", deck.id);
   };
   const handleCardChange = (content, editor, selected, flipped) => {
     var tmpDeck = { ...deck };
@@ -233,7 +237,7 @@ function App() {
                   color="primary"
                 />
               }
-              label="Open new deck"
+              label={"Open " + (newDeckName ? newDeckName : "new deck")}
             />
         </DialogContent>
         <DialogActions>
@@ -262,7 +266,14 @@ function App() {
               >
                 <ListItemText
                   primary={deck.name}
-                  secondary={deck.created}
+                  secondary={Date.parse(deck.created)
+                    .toLocaleString(
+                    [], {
+                      month: 'numeric', 
+                      day: 'numeric', 
+                      year: 'numeric', 
+                      hour: '2-digit', 
+                      minute:'2-digit'})}
                   primaryTypographyProps={{ noWrap: true }}
                 />
               </ListItem>)}
