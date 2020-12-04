@@ -1,13 +1,15 @@
 import React from 'react';
 import Card from '@material-ui/core/Card';
 import { Editor } from '@tinymce/tinymce-react';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import DeleteIcon from '@material-ui/icons/Delete';
-import Typography from '@material-ui/core/Typography';
+import { Button, Typography } from '@material-ui/core';
+import * as Icon from '@material-ui/icons';
 
 export default function BCard(props) {
+    const handleEditorChange = (content, _editor) => { 
+        if (content !== props.content) {
+            props.onEditorChange(content); 
+        }
+    };
 
     return (
         <Card elevation={3} square className="Card">
@@ -18,13 +20,22 @@ export default function BCard(props) {
                 <Typography variant="h6">
                     {props.number + " of " + props.count}
                 </Typography>
+                <Button
+                    color="inherit"
+                    startIcon={<Icon.Add/>}
+                    size="large"
+                    onClick={props.onAddCard}
+                >
+                    Add Card
+                </Button>
             </div>
             <div className="CardContent">
                 <div>
                     <Editor
                         id={props.id}
                         inline
-                        onEditorChange={props.onEditorChange}
+                        onEditorChange={handleEditorChange}
+                        onKeyUp={(event) => event.preventDefault()}
                         value={props.content}
                         init={{
                             menubar: false,
@@ -45,16 +56,20 @@ export default function BCard(props) {
                         Duplicate
                     </Button>
                 </div>
-                <IconButton onClick={props.onFlip}>
-                    <RefreshIcon
-                        fontSize="large"
-                    />
-                </IconButton>
-                <IconButton onClick={props.onDelete}>
-                    <DeleteIcon
-                        fontSize="large"
-                    />
-                </IconButton>
+                <Button 
+                    onClick={props.onFlip}
+                    startIcon={ <Icon.Refresh /> }
+                    size="large"
+                >
+                    Flip
+                </Button>
+                <Button 
+                    onClick={props.onDelete}
+                    startIcon={ <Icon.Delete /> }
+                    size="large"
+                >
+                    Delete
+                </Button>
             </div>
         </Card>
     );

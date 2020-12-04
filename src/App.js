@@ -1,35 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterNoneIcon from '@material-ui/icons/FilterNone';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Typography from '@material-ui/core/Typography';
-import Drawer from '@material-ui/core/Drawer';
+import {
+  AppBar, 
+  Toolbar, 
+  IconButton, 
+  Typography, 
+  Drawer, 
+  List, 
+  ListItem, 
+  ListItemText, 
+  Dialog, 
+  DialogTitle, 
+  DialogContent, 
+  DialogContentText, 
+  DialogActions, 
+  TextField, 
+  Menu, 
+  MenuItem, 
+  Button, 
+  FormControlLabel, 
+  Checkbox
+} from '@material-ui/core';
+import * as Icon from '@material-ui/icons';
+import './App.css';
 import EmptyState from './components/EmptyState';
 import DeckView from './components/DeckView';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogActions from '@material-ui/core/DialogActions';
-import TextField from '@material-ui/core/TextField';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import './App.css';
 
 function App() {
   const [deck, setDeck] = useState(null);
-  const [deckList, setDeckList] = useState(null);
   const [drawer, setDrawer] = useState(false);
   const [newDeckDialogOpen, setNewDeckDialogOpen] = useState(false);
   const [duplicateDeckDialogOpen, setDuplicateDeckDialogOpen] = useState(false);
@@ -52,8 +49,8 @@ function App() {
     return storage;
   };
 
-  const formattedDate = () => {
-    return (new Date()).toLocaleString(
+  const formattedDate = (date) => {
+    return (new Date(date)).toLocaleString(
       [], {
         month: 'numeric', 
         day: 'numeric', 
@@ -63,16 +60,16 @@ function App() {
   }
 
   useEffect(() => {
-    setDeckList(allStorage());
     setDeck(JSON.parse(localStorage.getItem(localStorage.getItem("lastOpen"))));
   }, []);
 
   const writeDeck = (newDeck) => {
+    newDeck.modified = new Date();
     setDeck(newDeck);
     localStorage.setItem(newDeck.id, JSON.stringify(newDeck));
   };
-
-  const toggleDrawer = (open) => (event) => { setDrawer(open); };
+  const handleDrawerOpen = () => { setDrawer(true); };
+  const handleDrawerClose = () => { setDrawer(false); };
   const handleNewDeck = () => {
     setNewDeckDialogOpen(true);
     setAppMenuOpen(false);
@@ -110,7 +107,6 @@ function App() {
       newDeck.created = formattedDate();
       localStorage.setItem(newDeck.id, JSON.stringify(newDeck));
       setNewDeckName('');
-      deckList.push(newDeck);
       if (openNewDeck) { setDeck(newDeck); }
     }
   };
@@ -122,6 +118,7 @@ function App() {
         id: newId,
         name: deckName,
         created: new Date(),
+        modified: new Date(),
         cards: [
           {
             front: "<p></p>",
@@ -132,20 +129,20 @@ function App() {
       }
     }
     localStorage.setItem(newObj.name, JSON.stringify(newObj.content));
-    deckList.push(newObj.content);
     handleDeckSelected(newObj.content);
   };
   const handleDeckSelected = (deck) => {
-    console.log("Deck selected. " + deck.cards[0].front);
     setDrawer(false);
     setDeck(JSON.parse(localStorage.getItem(deck.id)));
     localStorage.setItem("lastOpen", deck.id);
   };
-  const handleCardChange = (content, editor, selected, flipped) => {
+  const handleCardChange = (content, selected, flipped) => {
     var tmpDeck = { ...deck };
     if (flipped) {
+      console.log("Writing '" + content + "' to back of card " + selected + " in deck '" + deck.name + "'");
       tmpDeck.cards[selected].back = content;
     } else {
+      console.log("Writing '" + content + "' to front of card " + selected + " in deck '" + deck.name + "'");
       tmpDeck.cards[selected].front = content;
     }
     writeDeck(tmpDeck);
@@ -159,9 +156,6 @@ function App() {
   };
   const handleDeleteDeckConfirm = () => {
     setDeleteDeckDialogOpen(false);
-    var tmpArr = [...deckList];
-    tmpArr.splice(deckList.indexOf(deck), 1);
-    setDeckList(tmpArr);
     localStorage.removeItem(deck.id);
     setDeck(null);
   };
@@ -173,6 +167,21 @@ function App() {
   const handleOpenNewDeckChange = () => {
     setOpenNewDeck(!openNewDeck); 
   };
+  
+  const handleAddCard = (front, back) => {
+    var tmpDeck = {...deck};
+    tmpDeck.cards.push({
+      front: front,
+      back: back,
+      flagged: false
+    });
+    writeDeck(tmpDeck);
+  };
+  const handleDeleteCard = (index) => {
+    var tmpDeck = {...deck};
+    tmpDeck.cards = tmpDeck.cards.splice(index, 1);
+    writeDeck(tmpDeck);
+  }
 
   const emptyDrawer = (
     <div className="EmptyDrawer">
@@ -256,24 +265,18 @@ function App() {
   const drawerContent = (
     <div className="Drawer">
       <div className="DeckList">
-        {deckList && deckList.length > 0 ?
+        {allStorage() && allStorage().length > 0 ?
           <List>
-            {deckList.map((deck) =>
+            {allStorage().map((d) =>
               <ListItem
-                key={deck.id}
+                key={d.id}
                 button
-                onClick={() => handleDeckSelected(deck)}
+                onClick={() => handleDeckSelected(d)}
+                selected={deck ? deck.id === d.id : false}
               >
                 <ListItemText
-                  primary={deck.name}
-                  secondary={Date.parse(deck.created)
-                    .toLocaleString(
-                    [], {
-                      month: 'numeric', 
-                      day: 'numeric', 
-                      year: 'numeric', 
-                      hour: '2-digit', 
-                      minute:'2-digit'})}
+                  primary={d.name}
+                  secondary={formattedDate(d.modified)}
                   primaryTypographyProps={{ noWrap: true }}
                 />
               </ListItem>)}
@@ -283,7 +286,7 @@ function App() {
       <Button
         className="DrawerButton"
         disableElevation
-        startIcon={<AddIcon />}
+        startIcon={<Icon.Add />}
         onClick={handleNewDeck}
         fullWidth
         variant="contained"
@@ -308,9 +311,9 @@ function App() {
     deck ?
       <DeckView
         deck={deck}
-        onCardChange={
-          (content, editor, selected, flipped) =>
-            handleCardChange(content, editor, selected, flipped)}
+        onCardChange={handleCardChange}
+        onAddCard={handleAddCard}
+        onDeleteCard={handleDeleteCard}
       /> :
       <EmptyState>Select a Deck from the drawer to get started.</EmptyState>
   );
@@ -319,15 +322,15 @@ function App() {
     <div className="App">
       <AppBar position="static" elevation={3}>
         <Toolbar>
-          <IconButton edge="start" color="inherit" onClick={toggleDrawer(true)}>
-            <MenuIcon />
+          <IconButton edge="start" color="inherit" onClick={handleDrawerOpen}>
+            <Icon.Menu />
           </IconButton>
           {deckTitle}
           <IconButton
             color="inherit"
             onClick={handleAppMenuOpen}
           >
-            <MoreVertIcon />
+            <Icon.MoreVert />
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -343,25 +346,25 @@ function App() {
           <MenuItem
             onClick={handleNewDeck}
           >
-            <AddIcon className="GrayText" />
+            <Icon.Add className="GrayText" />
             Add Deck
           </MenuItem>
           <MenuItem
             disabled={!deck}
             onClick={handleDuplicateDeck}
           >
-            <FilterNoneIcon className="GrayText" />
+            <Icon.FilterNone className="GrayText" />
             Duplicate Deck
           </MenuItem>
           <MenuItem
             disabled={!deck}
             onClick={handleDeleteDeck}
           >
-            <DeleteIcon className="GrayText" />
+            <Icon.Delete className="GrayText" />
             Delete Deck
           </MenuItem>
         </Menu>
-        <Drawer anchor="left" open={drawer} onClose={toggleDrawer(false)}>
+        <Drawer anchor="left" open={drawer} onClose={handleDrawerClose}>
           {drawerContent}
         </Drawer>
         {newDeckDialog}
