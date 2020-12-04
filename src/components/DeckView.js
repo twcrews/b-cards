@@ -15,43 +15,60 @@ import ReactCardFlip from 'react-card-flip';
 export default function DeckView(props) {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [flipped, setFlipped] = useState(false);
-    const [activeCard, setActiveCard] = useState(0);
+    const [selectedCard, setSelectedCard] = useState(0);
+
+    const activeCard = () => {
+        var card = props.deck.cards[selectedCard];
+        return card ? selectedCard : 0;
+    }
 
     const handleDialogClose = () => { setDialogOpen(false); };
     const handleFlip = () => { setFlipped(!flipped); };
     const handleDelete = () => { setDialogOpen(true); };
     const handleDeleteConfirm = () => {
-        props.onDeleteCard(activeCard);
+        setSelectedCard(c => c < props.deck.cards.length - 1 ? 
+            c : c === 0 ? 0 : c - 1);
+        props.onDeleteCard(selectedCard);
         setDialogOpen(false);
     };
     const handleCardChange = (content) => {
-        props.onCardChange(content, activeCard, flipped);
+        props.onCardChange(content, selectedCard, flipped);
     };
 
     const handleAdvanceCard = () => { 
-        setFlipped(false);
-        setActiveCard(c => c + 1); 
+        if (flipped) {
+            setFlipped(false);
+            setTimeout(() => { setSelectedCard(c => c + 1); }, 120);
+        }
+        else {
+            setSelectedCard(c => c + 1); 
+        }
     };
     const handleReverseCard = () => { 
-        setFlipped(false);
-        setActiveCard(c => c - 1); 
+        if (flipped) {
+            setFlipped(false);
+            setTimeout(() => { setSelectedCard(c => c - 1); }, 120);
+        }
+        else {
+            setSelectedCard(c => c - 1); 
+        }
     };
     const handleJumpToEnd = () => {
         setFlipped(false);
-        setActiveCard(props.deck.cards.length - 1);
+        setSelectedCard(props.deck.cards.length - 1);
     };
     const handleJumpToStart = () => { 
         setFlipped(false);
-        setActiveCard(0); 
+        setSelectedCard(0); 
     };
     const addCard = (frontContent, backContent) => {
         props.onAddCard(frontContent, backContent);
-        setActiveCard(c => c + 1)
+        setSelectedCard(props.deck.cards.length - 1)
     }
     const handleAddCard = () => { addCard("<p></p>", "<p></p>"); };
     const handleDuplicateCard = () => {
-        addCard(props.deck.cards[activeCard].front,
-            props.deck.cards[activeCard].back);
+        addCard(props.deck.cards[selectedCard].front,
+            props.deck.cards[selectedCard].back);
     };
 
     const controls = (
@@ -60,7 +77,7 @@ export default function DeckView(props) {
                 variant="contained"
                 color="primary"
                 startIcon={<Icon.FirstPage />}
-                disabled={activeCard === 0}
+                disabled={selectedCard === 0}
                 onClick={handleJumpToStart}
             >
                 First
@@ -70,7 +87,7 @@ export default function DeckView(props) {
                     variant="contained"
                     color="primary"
                     startIcon={<Icon.ArrowBack />}
-                    disabled={activeCard === 0}
+                    disabled={selectedCard === 0}
                     onClick={handleReverseCard}
                 >
                     Back
@@ -87,7 +104,7 @@ export default function DeckView(props) {
                     variant="contained"
                     color="primary"
                     endIcon={<Icon.ArrowForward />}
-                    disabled={activeCard + 1 === 
+                    disabled={selectedCard + 1 === 
                         props.deck.cards.length}
                         onClick={handleAdvanceCard}
                 >
@@ -98,7 +115,7 @@ export default function DeckView(props) {
                 variant="contained"
                 color="primary"
                 endIcon={<Icon.LastPage />}
-                disabled={activeCard + 1 ===
+                disabled={selectedCard + 1 ===
                     props.deck.cards.length}
                     onClick={handleJumpToEnd}
             >
@@ -108,8 +125,8 @@ export default function DeckView(props) {
     );
 
     useEffect(() => {
-        setFlipped(false);
-    }, [props.deck.cards.length, props.deck.id]);
+        setSelectedCard(0);
+    }, [props.deck.id]);
 
     return (
         <React.Fragment>
@@ -121,26 +138,26 @@ export default function DeckView(props) {
                     flipSpeedFrontToBack={0.3}
                 >
                     <BCard
-                        id={props.deck.id + "-front-" + activeCard}
+                        id={props.deck.id + "-front-" + selectedCard}
                         flipped={false}
                         onEditorChange={handleCardChange}
                         onFlip={handleFlip}
                         onDelete={handleDelete}
                         onAddCard={handleAddCard}
                         onDuplicate={handleDuplicateCard}
-                        number={activeCard + 1}
+                        number={selectedCard + 1}
                         count={props.deck.cards.length}
-                        content={props.deck.cards[activeCard].front}
+                        content={props.deck.cards[activeCard()].front}
                     />
                     <BCard
-                        id={props.deck.id + "-back-" + activeCard}
+                        id={props.deck.id + "-back-" + selectedCard}
                         flipped={true}
                         onEditorChange={handleCardChange}
                         onFlip={handleFlip}
                         onDelete={handleDelete}
-                        number={activeCard + 1}
+                        number={selectedCard + 1}
                         count={props.deck.cards.length}
-                        content={props.deck.cards[activeCard].back}
+                        content={props.deck.cards[activeCard()].back}
                     />
                 </ReactCardFlip>
                 <Dialog open={dialogOpen} onClose={handleDialogClose}>

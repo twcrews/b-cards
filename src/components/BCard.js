@@ -6,7 +6,7 @@ import * as Icon from '@material-ui/icons';
 
 export default function BCard(props) {
     const handleEditorChange = (content, _editor) => { 
-        if (content !== props.content) {
+        if (content !== "" && content !== props.content) {
             props.onEditorChange(content); 
         }
     };

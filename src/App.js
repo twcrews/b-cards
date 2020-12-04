@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import {
-  AppBar, 
-  Toolbar, 
-  IconButton, 
-  Typography, 
-  Drawer, 
-  List, 
-  ListItem, 
-  ListItemText, 
-  Dialog, 
-  DialogTitle, 
-  DialogContent, 
-  DialogContentText, 
-  DialogActions, 
-  TextField, 
-  Menu, 
-  MenuItem, 
-  Button, 
-  FormControlLabel, 
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  TextField,
+  Menu,
+  MenuItem,
+  Button,
+  FormControlLabel,
   Checkbox
 } from '@material-ui/core';
 import * as Icon from '@material-ui/icons';
@@ -52,11 +52,12 @@ function App() {
   const formattedDate = (date) => {
     return (new Date(date)).toLocaleString(
       [], {
-        month: 'numeric', 
-        day: 'numeric', 
-        year: 'numeric', 
-        hour: '2-digit', 
-        minute:'2-digit'});
+      month: 'numeric',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 
   useEffect(() => {
@@ -78,10 +79,8 @@ function App() {
     setDuplicateDeckDialogOpen(true);
     setAppMenuOpen(false);
   };
-  const handleNewDeckDialogClose = () => 
-    { setNewDeckDialogOpen(false); };
-    const handleDuplicateDeckDialogClose = () => 
-      { setDuplicateDeckDialogOpen(false); };
+  const handleNewDeckDialogClose = () => { setNewDeckDialogOpen(false); };
+  const handleDuplicateDeckDialogClose = () => { setDuplicateDeckDialogOpen(false); };
   const handleNewDeckNameChange = (event) => {
     var text = event.target.value;
     text = text.substr(0, 20);//.replace(/[^0-9a-z_-\s]/gi, '');
@@ -101,7 +100,7 @@ function App() {
     event.stopPropagation();
     if (newDeckName.trim()) {
       setDuplicateDeckDialogOpen(false);
-      var newDeck = {...deck};
+      var newDeck = { ...deck };
       newDeck.id = uuid();
       newDeck.name = newDeckName.trim();
       newDeck.created = formattedDate();
@@ -165,11 +164,11 @@ function App() {
   };
   const handleAppMenuClose = () => { setAppMenuOpen(false); };
   const handleOpenNewDeckChange = () => {
-    setOpenNewDeck(!openNewDeck); 
+    setOpenNewDeck(!openNewDeck);
   };
-  
+
   const handleAddCard = (front, back) => {
-    var tmpDeck = {...deck};
+    var tmpDeck = { ...deck };
     tmpDeck.cards.push({
       front: front,
       back: back,
@@ -178,9 +177,13 @@ function App() {
     writeDeck(tmpDeck);
   };
   const handleDeleteCard = (index) => {
-    var tmpDeck = {...deck};
-    tmpDeck.cards = tmpDeck.cards.splice(index, 1);
-    writeDeck(tmpDeck);
+    if (deck.cards.length === 1) {
+      handleDeleteDeckConfirm();
+    } else {
+      var tmpDeck = { ...deck };
+      tmpDeck.cards.splice(index, 1);
+      writeDeck(tmpDeck);
+    }
   }
 
   const emptyDrawer = (
@@ -231,23 +234,23 @@ function App() {
   const duplicateDeckDialog = (
     <Dialog open={duplicateDeckDialogOpen} onClose={handleDuplicateDeckDialogClose}>
       <form onSubmit={handleDuplicateDeckConfirm}>
-  <DialogTitle>Duplicate "{deck ? deck.name : null}"</DialogTitle>
+        <DialogTitle>Duplicate "{deck ? deck.name : null}"</DialogTitle>
         <DialogContent className="DialogGrid">
           <TextField
             autoFocus
             label="Deck name"
             value={newDeckName}
             onChange={handleNewDeckNameChange} />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={openNewDeck}
-                  onChange={handleOpenNewDeckChange}
-                  color="primary"
-                />
-              }
-              label={"Open " + (newDeckName ? newDeckName : "new deck")}
-            />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={openNewDeck}
+                onChange={handleOpenNewDeckChange}
+                color="primary"
+              />
+            }
+            label={"Open " + (newDeckName ? newDeckName : "new deck")}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDuplicateDeckDialogClose}>Cancel</Button>
