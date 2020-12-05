@@ -126,6 +126,7 @@ export default function DeckView(props) {
 
     useEffect(() => {
         setSelectedCard(0);
+        setFlipped(false);
     }, [props.deck.id]);
 
     return (
