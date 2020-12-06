@@ -5,29 +5,37 @@ import { Button, Typography } from '@material-ui/core';
 import * as Icon from '@material-ui/icons';
 
 export default function BCard(props) {
-    const handleEditorChange = (content, _editor) => { 
+    const handleEditorChange = (content, _editor) => {
         if (content !== "" && content !== props.content) {
-            props.onEditorChange(content); 
+            props.onEditorChange(content);
         }
     };
+    const handleFlagToggle = () => { props.onFlag(); }
 
     return (
         <Card elevation={3} square className="Card">
-            <div className="CardHeader">
-                <Typography variant="h6">
-                    {props.flipped ? "Back" : "Front"}
-                </Typography>
-                <Typography variant="h6">
-                    {props.number + " of " + props.count}
-                </Typography>
-                <Button
-                    color="inherit"
-                    startIcon={<Icon.Add/>}
-                    size="large"
-                    onClick={props.onAddCard}
-                >
-                    Add Card
-                </Button>
+            <div className="CardHeader BorderBox CenterVertical ThreeColumn">
+                <div className="LeftAlign">
+                    <Typography variant="h6">
+                        {props.flipped ? "Back" : "Front"}
+                    </Typography>
+                </div>
+                <div className="CenterAlign">
+                    <Typography variant="h6">
+                        {props.number + " of " + props.count}
+                    </Typography>
+                </div>
+                <div className="RightAlign">
+                    <Button
+                        className="AutoWidth"
+                        color="inherit"
+                        startIcon={<Icon.Add />}
+                        size="large"
+                        onClick={props.onAddCard}
+                    >
+                        Add Card
+                    </Button>
+                </div>
             </div>
             <div className="CardContent">
                 <div>
@@ -47,29 +55,45 @@ export default function BCard(props) {
                     />
                 </div>
             </div>
-            <div className="CardTools">
-                <div className="ButtonContainer">
+            <div className="CardTools ThreeColumn CenterVertical BorderBox">
+                <span className="AutoWidth LeftAlign">
                     <Button
                         onClick={props.onDuplicate}
                         size="large"
+                        startIcon={<Icon.FilterNone />}
                     >
                         Duplicate
                     </Button>
+                </span>
+                <span className="AutoWidth CenterAlign">
+                    <Button
+                        className={props.flagged ? "FlagButtonActive" : ""}
+                        variant={props.flagged ? "contained" : "text"}
+                        startIcon={<Icon.Flag color="inherit" />}
+                        onClick={handleFlagToggle}
+                        size="large"
+                        disableElevation
+                        disabled={props.flagLock}
+                    >
+                        {props.flagged ? "Flagged" : "Flag"}
+                    </Button>
+                </span>
+                <div className="FlexGap RightAlign">
+                    <Button
+                        onClick={props.onFlip}
+                        startIcon={<Icon.Refresh />}
+                        size="large"
+                    >
+                        Flip
+                    </Button>
+                    <Button
+                        onClick={props.onDelete}
+                        startIcon={<Icon.Delete />}
+                        size="large"
+                    >
+                        Delete
+                    </Button>
                 </div>
-                <Button 
-                    onClick={props.onFlip}
-                    startIcon={ <Icon.Refresh /> }
-                    size="large"
-                >
-                    Flip
-                </Button>
-                <Button 
-                    onClick={props.onDelete}
-                    startIcon={ <Icon.Delete /> }
-                    size="large"
-                >
-                    Delete
-                </Button>
             </div>
         </Card>
     );

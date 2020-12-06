@@ -4,6 +4,36 @@ body {
   font-family: Roboto;
 }
 
+.LeftAlign {
+  text-align: left;
+}
+
+.RightAlign {
+  text-align: right;
+}
+
+.CenterAlign {
+  text-align: center;
+}
+
+.BorderBox {
+  box-sizing: border-box;
+}
+
+.AutoWidth {
+  width: auto;
+}
+
+.ThreeColumn {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: 100%;
+}
+
+.CenterVertical {
+  align-items: center;
+}
+
 .App {
   display: grid;
   grid-template-rows: auto 1fr;
@@ -87,7 +117,7 @@ body {
   gap: 20px;
 }
 
-.Cards {
+.CardSpace {
   display: grid;
   padding: 60px 80px;
   padding-bottom: 0;
@@ -100,10 +130,6 @@ body {
 }
 
 .CardHeader {
-  display: grid;
-  grid-template-columns: auto auto auto;
-  align-items: center;
-  justify-content: space-between;
   padding: 20px 40px;
   color: #444;
   cursor: default;
@@ -122,18 +148,8 @@ body {
 }
 
 .CardTools {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
   border-top: 1px solid #ddd;
-  align-items: center;
   padding: 20px 40px;
-  gap: 10px;
-}
-
-.ButtonContainer {
-  display: grid;
-  align-items: center;
-  justify-content: flex-start;
 }
 
 .MuiMenuItem-root {
@@ -148,6 +164,19 @@ body {
 .DialogGrid {
   display: grid;
   gap: 10px;
+}
+
+.FlagButtonActive {
+  background-color: #ff8c00 !important;
+  color: white !important;
+}
+
+.FlagButtonActive:hover {
+  background-color: #dd7b00 !important;
+}
+
+.FlagButtonActive:disabled {
+  opacity: 0.5 !important;
 }
 
 @media screen and (max-width: 600px) {

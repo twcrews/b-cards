@@ -184,6 +184,12 @@ function App() {
       tmpDeck.cards.splice(index, 1);
       writeDeck(tmpDeck);
     }
+  };
+  const handleFlagToggle = (card) => {
+    console.log("received flag for " + card);
+    var tmpDeck = {...deck};
+    tmpDeck.cards[card].flagged = !deck.cards[card].flagged;
+    writeDeck(tmpDeck);
   }
 
   const emptyDrawer = (
@@ -299,17 +305,6 @@ function App() {
     </div>
   );
 
-  const deckTitle = (
-    <div className="AppTitle">
-      <span className="TitleText">
-        bCards
-      </span>
-      <Typography className="SubtitleText" variant="h6" noWrap>
-        {"\xa0\xa0—\xa0\xa0" + (deck ? deck.name : "No deck loaded")}
-      </Typography>
-    </div>
-  );
-
   const content = (
     deck ?
       <DeckView
@@ -317,6 +312,7 @@ function App() {
         onCardChange={handleCardChange}
         onAddCard={handleAddCard}
         onDeleteCard={handleDeleteCard}
+        onFlag={handleFlagToggle}
       /> :
       <EmptyState>Select a Deck from the drawer to get started.</EmptyState>
   );
@@ -325,16 +321,27 @@ function App() {
     <div className="App">
       <AppBar position="static" elevation={3}>
         <Toolbar>
-          <IconButton edge="start" color="inherit" onClick={handleDrawerOpen}>
-            <Icon.Menu />
-          </IconButton>
-          {deckTitle}
-          <IconButton
-            color="inherit"
-            onClick={handleAppMenuOpen}
-          >
-            <Icon.MoreVert />
-          </IconButton>
+          <div className="ThreeColumn CenterVertical">
+            <div className="LeftAlign">
+              <IconButton edge="start" color="inherit" onClick={handleDrawerOpen}>
+                <Icon.Menu />
+              </IconButton>
+              <span className="TitleText">
+                bCards
+              </span>
+            </div>
+            <Typography className="TitleText CenterAlign" variant="h6" noWrap>
+              {deck ? deck.name : "No deck loaded"}
+            </Typography>
+            <span className="AutoWidth RightAlign">
+              <IconButton
+                color="inherit"
+                onClick={handleAppMenuOpen}
+              >
+                <Icon.MoreVert />
+              </IconButton>
+            </span>
+          </div>
         </Toolbar>
       </AppBar>
       <div className="Page">

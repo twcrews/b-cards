@@ -16,6 +16,7 @@ export default function DeckView(props) {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [flipped, setFlipped] = useState(false);
     const [selectedCard, setSelectedCard] = useState(0);
+    const [flaggedOnly, setFlaggedOnly] = useState(false);
 
     const activeCard = () => {
         var card = props.deck.cards[selectedCard];
@@ -70,19 +71,21 @@ export default function DeckView(props) {
         addCard(props.deck.cards[selectedCard].front,
             props.deck.cards[selectedCard].back);
     };
+    const handleFlagToggle = () => { props.onFlag(activeCard()); };
+    const handleFlaggedOnlyToggle = () => { setFlaggedOnly(f => !f); };
 
     const controls = (
         <div className="DeckControls">
-            <Button
-                variant="contained"
-                color="primary"
-                startIcon={<Icon.FirstPage />}
-                disabled={selectedCard === 0}
-                onClick={handleJumpToStart}
-            >
-                First
-            </Button>
             <ButtonGroup>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<Icon.FirstPage />}
+                    disabled={selectedCard === 0}
+                    onClick={handleJumpToStart}
+                >
+                    First
+                </Button>
                 <Button
                     variant="contained"
                     color="primary"
@@ -92,6 +95,8 @@ export default function DeckView(props) {
                 >
                     Back
                 </Button>
+            </ButtonGroup>
+            <ButtonGroup>
                 <Button
                     variant="contained"
                     color="primary"
@@ -103,6 +108,18 @@ export default function DeckView(props) {
                 <Button
                     variant="contained"
                     color="primary"
+                    startIcon={flaggedOnly ? 
+                        <Icon.CheckBox /> : <Icon.CheckBoxOutlineBlank />}
+                    disabled={props.deck.cards.filter(c => c.flagged).length < 1}
+                    onClick={handleFlaggedOnlyToggle}
+                >
+                    Flagged Only
+                </Button>
+            </ButtonGroup>
+            <ButtonGroup>
+                <Button
+                    variant="contained"
+                    color="primary"
                     endIcon={<Icon.ArrowForward />}
                     disabled={selectedCard + 1 === 
                         props.deck.cards.length}
@@ -110,17 +127,17 @@ export default function DeckView(props) {
                 >
                     Next
                 </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    endIcon={<Icon.LastPage />}
+                    disabled={selectedCard + 1 ===
+                        props.deck.cards.length}
+                        onClick={handleJumpToEnd}
+                >
+                    Last
+                </Button>
             </ButtonGroup>
-            <Button
-                variant="contained"
-                color="primary"
-                endIcon={<Icon.LastPage />}
-                disabled={selectedCard + 1 ===
-                    props.deck.cards.length}
-                    onClick={handleJumpToEnd}
-            >
-                Last
-            </Button>
         </div>
     );
 
@@ -131,7 +148,7 @@ export default function DeckView(props) {
 
     return (
         <React.Fragment>
-            <div className="Cards">
+            <div className="CardSpace">
                 <ReactCardFlip
                     isFlipped={flipped}
                     flipDirection="vertical"
@@ -149,6 +166,9 @@ export default function DeckView(props) {
                         number={selectedCard + 1}
                         count={props.deck.cards.length}
                         content={props.deck.cards[activeCard()].front}
+                        flagged={props.deck.cards[activeCard()].flagged}
+                        onFlag={handleFlagToggle}
+                        flagLock={flaggedOnly}
                     />
                     <BCard
                         id={props.deck.id + "-back-" + selectedCard}
@@ -156,9 +176,14 @@ export default function DeckView(props) {
                         onEditorChange={handleCardChange}
                         onFlip={handleFlip}
                         onDelete={handleDelete}
+                        onAddCard={handleAddCard}
+                        onDuplicate={handleDuplicateCard}
                         number={selectedCard + 1}
                         count={props.deck.cards.length}
                         content={props.deck.cards[activeCard()].back}
+                        flagged={props.deck.cards[activeCard()].flagged}
+                        onFlag={handleFlagToggle}
+                        flagLock={flaggedOnly}
                     />
                 </ReactCardFlip>
                 <Dialog open={dialogOpen} onClose={handleDialogClose}>
