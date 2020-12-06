@@ -32,6 +32,7 @@ export default function BCard(props) {
                         startIcon={<Icon.Add />}
                         size="large"
                         onClick={props.onAddCard}
+                        disabled={props.flaggedOnly}
                     >
                         Add Card
                     </Button>
@@ -61,6 +62,7 @@ export default function BCard(props) {
                         onClick={props.onDuplicate}
                         size="large"
                         startIcon={<Icon.FilterNone />}
+                        disabled={props.flaggedOnly}
                     >
                         Duplicate
                     </Button>
@@ -73,7 +75,6 @@ export default function BCard(props) {
                         onClick={handleFlagToggle}
                         size="large"
                         disableElevation
-                        disabled={props.flagLock}
                     >
                         {props.flagged ? "Flagged" : "Flag"}
                     </Button>

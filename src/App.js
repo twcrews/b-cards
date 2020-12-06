@@ -28,13 +28,17 @@ import DeckView from './components/DeckView';
 function App() {
   const [deck, setDeck] = useState(null);
   const [drawer, setDrawer] = useState(false);
-  const [newDeckDialogOpen, setNewDeckDialogOpen] = useState(false);
-  const [duplicateDeckDialogOpen, setDuplicateDeckDialogOpen] = useState(false);
-  const [deleteDeckDialogOpen, setDeleteDeckDialogOpen] = useState(false);
+  const [newDeckDialog, setNewDeckDialog] = useState(false);
+  const [duplicateDeckDialog, setDuplicateDeckDialog] = useState(false);
+  const [renameDeckDialog, setRenameDeckDialog] = useState(false);
+  const [deleteDeckDialog, setDeleteDeckDialog] = useState(false);
   const [newDeckName, setNewDeckName] = useState('');
+  const [renameDeckName, setRenameDeckName] = useState('');
   const [openNewDeck, setOpenNewDeck] = useState(false);
   const [appMenuOpen, setAppMenuOpen] = useState(false);
   const [appMenuAnchor, setAppMenuAnchor] = useState(null);
+  const [flaggedOnly, setFlaggedOnly] = useState(false);
+  const [shuffled, setShuffled] = useState(false);
 
   const allStorage = () => {
     var storage = [],
@@ -72,15 +76,15 @@ function App() {
   const handleDrawerOpen = () => { setDrawer(true); };
   const handleDrawerClose = () => { setDrawer(false); };
   const handleNewDeck = () => {
-    setNewDeckDialogOpen(true);
+    setNewDeckDialog(true);
     setAppMenuOpen(false);
   };
   const handleDuplicateDeck = () => {
-    setDuplicateDeckDialogOpen(true);
+    setDuplicateDeckDialog(true);
     setAppMenuOpen(false);
   };
-  const handleNewDeckDialogClose = () => { setNewDeckDialogOpen(false); };
-  const handleDuplicateDeckDialogClose = () => { setDuplicateDeckDialogOpen(false); };
+  const handleNewDeckDialogClose = () => { setNewDeckDialog(false); };
+  const handleDuplicateDeckDialogClose = () => { setDuplicateDeckDialog(false); };
   const handleNewDeckNameChange = (event) => {
     var text = event.target.value;
     text = text.substr(0, 20);//.replace(/[^0-9a-z_-\s]/gi, '');
@@ -90,7 +94,7 @@ function App() {
     event.preventDefault();
     event.stopPropagation();
     if (newDeckName.trim()) {
-      setNewDeckDialogOpen(false);
+      setNewDeckDialog(false);
       addDeck(newDeckName.trim());
       setNewDeckName('');
     }
@@ -99,7 +103,7 @@ function App() {
     event.preventDefault();
     event.stopPropagation();
     if (newDeckName.trim()) {
-      setDuplicateDeckDialogOpen(false);
+      setDuplicateDeckDialog(false);
       var newDeck = { ...deck };
       newDeck.id = uuid();
       newDeck.name = newDeckName.trim();
@@ -110,6 +114,7 @@ function App() {
     }
   };
   const addDeck = (deckName) => {
+    setFlaggedOnly(false);
     var newId = uuid();
     var newObj = {
       name: newId,
@@ -120,8 +125,9 @@ function App() {
         modified: new Date(),
         cards: [
           {
-            front: "<p></p>",
-            back: "<p></p>",
+            id: uuid(),
+            front: "",
+            back: "",
             flagged: false
           }
         ]
@@ -135,26 +141,47 @@ function App() {
     setDeck(JSON.parse(localStorage.getItem(deck.id)));
     localStorage.setItem("lastOpen", deck.id);
   };
-  const handleCardChange = (content, selected, flipped) => {
+  const handleCardChange = (content, id, flipped) => {
     var tmpDeck = { ...deck };
     if (flipped) {
-      console.log("Writing '" + content + "' to back of card " + selected + " in deck '" + deck.name + "'");
-      tmpDeck.cards[selected].back = content;
+      tmpDeck.cards.find(c => c.id === id).back = content;
     } else {
-      console.log("Writing '" + content + "' to front of card " + selected + " in deck '" + deck.name + "'");
-      tmpDeck.cards[selected].front = content;
+      tmpDeck.cards.find(c => c.id === id).front = content;
     }
     writeDeck(tmpDeck);
   };
+  const handleRenameDeck = () => {
+    setAppMenuOpen(false);
+    setRenameDeckName(deck.name);
+    setRenameDeckDialog(true);
+  }
+  const handleRenameDeckDialogClose = () => {
+    setRenameDeckDialog(false);
+  }
+  const handleRenameDeckNameChanged = (event) => {
+    var text = event.target.value;
+    text = text.substr(0, 20);
+    setRenameDeckName(text);
+  }
+  const handleRenameDeckConfirm = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (renameDeckName.trim()) {
+      setRenameDeckDialog(false);
+      var newDeck = { ...deck };
+      newDeck.name = renameDeckName.trim();
+      writeDeck(newDeck);
+    }
+  }
   const handleDeleteDeck = () => {
     setAppMenuOpen(false);
-    setDeleteDeckDialogOpen(true);
+    setDeleteDeckDialog(true);
   }
   const handleDeleteDeckDialogClose = () => {
-    setDeleteDeckDialogOpen(false);
+    setDeleteDeckDialog(false);
   };
   const handleDeleteDeckConfirm = () => {
-    setDeleteDeckDialogOpen(false);
+    setDeleteDeckDialog(false);
     localStorage.removeItem(deck.id);
     setDeck(null);
   };
@@ -170,6 +197,7 @@ function App() {
   const handleAddCard = (front, back) => {
     var tmpDeck = { ...deck };
     tmpDeck.cards.push({
+      id: uuid(),
       front: front,
       back: back,
       flagged: false
@@ -185,12 +213,30 @@ function App() {
       writeDeck(tmpDeck);
     }
   };
-  const handleFlagToggle = (card) => {
-    console.log("received flag for " + card);
-    var tmpDeck = {...deck};
-    tmpDeck.cards[card].flagged = !deck.cards[card].flagged;
+  const handleFlagToggle = (id) => {
+    if (flaggedOnly && deck.cards.filter(c => c.flagged).length < 2) {
+      handleFlaggedOnlyToggle();
+    }
+    var tmpDeck = { ...deck };
+    tmpDeck.cards.find(c => c.id === id).flagged =
+      !deck.cards.find(c => c.id === id).flagged;
     writeDeck(tmpDeck);
-  }
+  };
+  const handleFlaggedOnlyToggle = () => { setFlaggedOnly(f => !f); };
+  const handleShuffleToggle = () => { setShuffled(s => !s); };
+
+  const visibleCards = () => {
+    var visibleDeck = { ...deck }
+    if (flaggedOnly) {
+      visibleDeck.cards = deck.cards.filter(c =>
+        c.flagged);
+    }
+    if (shuffled) {
+      var cards = [...visibleDeck.cards];
+      visibleDeck.cards = shuffle(cards);
+    }
+    return visibleDeck;
+  };
 
   const emptyDrawer = (
     <div className="EmptyDrawer">
@@ -198,8 +244,8 @@ function App() {
     </div>
   );
 
-  const deleteDeckDialog = (
-    <Dialog open={deleteDeckDialogOpen} onClose={handleDeleteDeckDialogClose}>
+  const deleteDeckDialogContent = (
+    <Dialog open={deleteDeckDialog} onClose={handleDeleteDeckDialogClose}>
       <DialogTitle>Delete "{deck ? deck.name : null}"?</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -213,8 +259,8 @@ function App() {
     </Dialog>
   );
 
-  const newDeckDialog = (
-    <Dialog open={newDeckDialogOpen} onClose={handleNewDeckDialogClose}>
+  const newDeckDialogContent = (
+    <Dialog open={newDeckDialog} onClose={handleNewDeckDialogClose}>
       <form onSubmit={handleNewDeckConfirm}>
         <DialogTitle>New Deck</DialogTitle>
         <DialogContent>
@@ -237,8 +283,8 @@ function App() {
     </Dialog>
   );
 
-  const duplicateDeckDialog = (
-    <Dialog open={duplicateDeckDialogOpen} onClose={handleDuplicateDeckDialogClose}>
+  const duplicateDeckDialogContent = (
+    <Dialog open={duplicateDeckDialog} onClose={handleDuplicateDeckDialogClose}>
       <form onSubmit={handleDuplicateDeckConfirm}>
         <DialogTitle>Duplicate "{deck ? deck.name : null}"</DialogTitle>
         <DialogContent className="DialogGrid">
@@ -271,24 +317,49 @@ function App() {
     </Dialog>
   );
 
+  const renameDeckDialogContent = (
+    <Dialog open={renameDeckDialog} onClose={handleRenameDeckDialogClose}>
+      <form onSubmit={handleRenameDeckConfirm}>
+        <DialogTitle>Rename Deck</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            label="Deck name"
+            value={renameDeckName}
+            onChange={handleRenameDeckNameChanged} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleRenameDeckDialogClose}>Cancel</Button>
+          <Button
+            disabled={!renameDeckName.trim() || renameDeckName === deck.name}
+            type="submit"
+          >
+            Rename
+            </Button>
+        </DialogActions>
+      </form>
+    </Dialog>
+  );
+
   const drawerContent = (
     <div className="Drawer">
       <div className="DeckList">
         {allStorage() && allStorage().length > 0 ?
           <List>
-            {allStorage().map((d) =>
-              <ListItem
-                key={d.id}
-                button
-                onClick={() => handleDeckSelected(d)}
-                selected={deck ? deck.id === d.id : false}
-              >
-                <ListItemText
-                  primary={d.name}
-                  secondary={formattedDate(d.modified)}
-                  primaryTypographyProps={{ noWrap: true }}
-                />
-              </ListItem>)}
+            {allStorage().sort((a, b) =>
+              (a.modified < b.modified) ? 1 : -1).map((d) =>
+                <ListItem
+                  key={d.id}
+                  button
+                  onClick={() => handleDeckSelected(d)}
+                  selected={deck ? deck.id === d.id : false}
+                >
+                  <ListItemText
+                    primary={d.name}
+                    secondary={formattedDate(d.modified)}
+                    primaryTypographyProps={{ noWrap: true }}
+                  />
+                </ListItem>)}
           </List> :
           emptyDrawer}
       </div>
@@ -308,11 +379,15 @@ function App() {
   const content = (
     deck ?
       <DeckView
-        deck={deck}
+        deck={visibleCards()}
         onCardChange={handleCardChange}
         onAddCard={handleAddCard}
         onDeleteCard={handleDeleteCard}
         onFlag={handleFlagToggle}
+        onFlaggedOnly={handleFlaggedOnlyToggle}
+        onShuffle={handleShuffleToggle}
+        flaggedOnly={flaggedOnly}
+        shuffled={shuffled}
       /> :
       <EmptyState>Select a Deck from the drawer to get started.</EmptyState>
   );
@@ -368,6 +443,13 @@ function App() {
           </MenuItem>
           <MenuItem
             disabled={!deck}
+            onClick={handleRenameDeck}
+          >
+            <Icon.Edit className="GrayText" />
+            Rename Deck
+          </MenuItem>
+          <MenuItem
+            disabled={!deck}
             onClick={handleDeleteDeck}
           >
             <Icon.Delete className="GrayText" />
@@ -377,9 +459,10 @@ function App() {
         <Drawer anchor="left" open={drawer} onClose={handleDrawerClose}>
           {drawerContent}
         </Drawer>
-        {newDeckDialog}
-        {deleteDeckDialog}
-        {duplicateDeckDialog}
+        {newDeckDialogContent}
+        {deleteDeckDialogContent}
+        {duplicateDeckDialogContent}
+        {renameDeckDialogContent}
       </React.Fragment>
     </div>
   );
@@ -389,6 +472,20 @@ function uuid() {
   return 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'.replace(/x/g, function (c) {
     return (Math.random() * 16 | 0).toString(16);
   });
+}
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  while (0 !== currentIndex) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
 }
 
 export default App;
