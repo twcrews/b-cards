@@ -29,7 +29,12 @@ export default function DeckView(props) {
     const handleFlip = () => { setFlipped(!flipped); };
     const handleDelete = () => { setDialogOpen(true); };
     const handleDeleteConfirm = () => {
-        props.onDeleteCard(activeId());
+        if (flipped) {
+            setFlipped(false);
+            setTimeout(() => { props.onDeleteCard(activeId()); });
+        } else {
+            props.onDeleteCard(activeId());
+        }
         setSelectedCard(c => c < props.deck.cards.length - 1 ? 
             c : c === 0 ? 0 : c - 1);
         setDialogOpen(false);
@@ -65,6 +70,7 @@ export default function DeckView(props) {
         setSelectedCard(0); 
     };
     const addCard = (frontContent, backContent) => {
+        setFlipped(false);
         props.onAddCard(frontContent, backContent);
         setSelectedCard(props.deck.cards.length - 1)
     }
