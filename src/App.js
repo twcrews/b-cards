@@ -1,25 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  AppBar,
-  Toolbar,
-  IconButton,
-  Typography,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  TextField,
-  Menu,
-  MenuItem,
-  Button,
-  FormControlLabel,
-  Checkbox
-} from '@material-ui/core';
+import * as M from '@material-ui/core';
 import * as Icon from '@material-ui/icons';
 import './App.css';
 import EmptyState from './components/EmptyState';
@@ -87,7 +67,7 @@ function App() {
   const handleDuplicateDeckDialogClose = () => { setDuplicateDeckDialog(false); };
   const handleNewDeckNameChange = (event) => {
     var text = event.target.value;
-    text = text.substr(0, 20);//.replace(/[^0-9a-z_-\s]/gi, '');
+    text = text.substr(0, 20);
     setNewDeckName(text);
   };
   const handleNewDeckConfirm = (event) => {
@@ -240,62 +220,62 @@ function App() {
 
   const emptyDrawer = (
     <div className="EmptyDrawer">
-      <Typography variant="h6">No decks found</Typography>
+      <M.Typography variant="h6">No decks found</M.Typography>
     </div>
   );
 
   const deleteDeckDialogContent = (
-    <Dialog open={deleteDeckDialog} onClose={handleDeleteDeckDialogClose}>
-      <DialogTitle>Delete "{deck ? deck.name : null}"?</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
+    <M.Dialog open={deleteDeckDialog} onClose={handleDeleteDeckDialogClose}>
+      <M.DialogTitle>Delete "{deck ? deck.name : null}"?</M.DialogTitle>
+      <M.DialogContent>
+        <M.DialogContentText>
           This deck will be deleted forever (a really long time).
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleDeleteDeckDialogClose}>Cancel</Button>
-        <Button color="secondary" onClick={handleDeleteDeckConfirm}>Delete</Button>
-      </DialogActions>
-    </Dialog>
+        </M.DialogContentText>
+      </M.DialogContent>
+      <M.DialogActions>
+        <M.Button onClick={handleDeleteDeckDialogClose}>Cancel</M.Button>
+        <M.Button color="secondary" onClick={handleDeleteDeckConfirm}>Delete</M.Button>
+      </M.DialogActions>
+    </M.Dialog>
   );
 
   const newDeckDialogContent = (
-    <Dialog open={newDeckDialog} onClose={handleNewDeckDialogClose}>
+    <M.Dialog open={newDeckDialog} onClose={handleNewDeckDialogClose}>
       <form onSubmit={handleNewDeckConfirm}>
-        <DialogTitle>New Deck</DialogTitle>
-        <DialogContent>
-          <TextField
+        <M.DialogTitle>New Deck</M.DialogTitle>
+        <M.DialogContent>
+          <M.TextField
             autoFocus
             label="Deck name"
             value={newDeckName}
             onChange={handleNewDeckNameChange} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleNewDeckDialogClose}>Cancel</Button>
-          <Button
+        </M.DialogContent>
+        <M.DialogActions>
+          <M.Button onClick={handleNewDeckDialogClose}>Cancel</M.Button>
+          <M.Button
             disabled={!newDeckName.trim()}
             type="submit"
           >
             Add
-            </Button>
-        </DialogActions>
+            </M.Button>
+        </M.DialogActions>
       </form>
-    </Dialog>
+    </M.Dialog>
   );
 
   const duplicateDeckDialogContent = (
-    <Dialog open={duplicateDeckDialog} onClose={handleDuplicateDeckDialogClose}>
+    <M.Dialog open={duplicateDeckDialog} onClose={handleDuplicateDeckDialogClose}>
       <form onSubmit={handleDuplicateDeckConfirm}>
-        <DialogTitle>Duplicate "{deck ? deck.name : null}"</DialogTitle>
-        <DialogContent className="DialogGrid">
-          <TextField
+        <M.DialogTitle>Duplicate "{deck ? deck.name : null}"</M.DialogTitle>
+        <M.DialogContent className="DialogGrid">
+          <M.TextField
             autoFocus
             label="Deck name"
             value={newDeckName}
             onChange={handleNewDeckNameChange} />
-          <FormControlLabel
+          <M.FormControlLabel
             control={
-              <Checkbox
+              <M.Checkbox
                 checked={openNewDeck}
                 onChange={handleOpenNewDeckChange}
                 color="primary"
@@ -303,67 +283,67 @@ function App() {
             }
             label={"Open " + (newDeckName ? newDeckName : "new deck")}
           />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDuplicateDeckDialogClose}>Cancel</Button>
-          <Button
+        </M.DialogContent>
+        <M.DialogActions>
+          <M.Button onClick={handleDuplicateDeckDialogClose}>Cancel</M.Button>
+          <M.Button
             disabled={!newDeckName.trim()}
             type="submit"
           >
             Add
-            </Button>
-        </DialogActions>
+            </M.Button>
+        </M.DialogActions>
       </form>
-    </Dialog>
+    </M.Dialog>
   );
 
   const renameDeckDialogContent = (
-    <Dialog open={renameDeckDialog} onClose={handleRenameDeckDialogClose}>
+    <M.Dialog open={renameDeckDialog} onClose={handleRenameDeckDialogClose}>
       <form onSubmit={handleRenameDeckConfirm}>
-        <DialogTitle>Rename Deck</DialogTitle>
-        <DialogContent>
-          <TextField
+        <M.DialogTitle>Rename Deck</M.DialogTitle>
+        <M.DialogContent>
+          <M.TextField
             autoFocus
             label="Deck name"
             value={renameDeckName}
             onChange={handleRenameDeckNameChanged} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleRenameDeckDialogClose}>Cancel</Button>
-          <Button
+        </M.DialogContent>
+        <M.DialogActions>
+          <M.Button onClick={handleRenameDeckDialogClose}>Cancel</M.Button>
+          <M.Button
             disabled={!renameDeckName.trim() || renameDeckName === deck.name}
             type="submit"
           >
             Rename
-            </Button>
-        </DialogActions>
+            </M.Button>
+        </M.DialogActions>
       </form>
-    </Dialog>
+    </M.Dialog>
   );
 
   const drawerContent = (
     <div className="Drawer">
       <div className="DeckList">
         {allStorage() && allStorage().length > 0 ?
-          <List>
+          <M.List>
             {allStorage().sort((a, b) =>
               (a.modified < b.modified) ? 1 : -1).map((d) =>
-                <ListItem
+                <M.ListItem
                   key={d.id}
                   button
                   onClick={() => handleDeckSelected(d)}
                   selected={deck ? deck.id === d.id : false}
                 >
-                  <ListItemText
+                  <M.ListItemText
                     primary={d.name}
                     secondary={formattedDate(d.modified)}
                     primaryTypographyProps={{ noWrap: true }}
                   />
-                </ListItem>)}
-          </List> :
+                </M.ListItem>)}
+          </M.List> :
           emptyDrawer}
       </div>
-      <Button
+      <M.Button
         className="DrawerButton"
         disableElevation
         startIcon={<Icon.Add />}
@@ -372,7 +352,7 @@ function App() {
         variant="contained"
       >
         New Deck
-      </Button>
+      </M.Button>
     </div>
   );
 
@@ -389,76 +369,82 @@ function App() {
         flaggedOnly={flaggedOnly}
         shuffled={shuffled}
       /> :
-      <EmptyState>Select a Deck from the drawer to get started.</EmptyState>
+      <EmptyState
+        onClick={handleNewDeck}
+        button="New Deck"
+        buttonIcon={<Icon.Add />}
+      >
+        Select a Deck from the drawer to get started.
+      </EmptyState>
   );
 
   return (
     <div className="App">
-      <AppBar position="static" elevation={3}>
-        <Toolbar>
+      <M.AppBar position="static" elevation={3}>
+        <M.Toolbar>
           <div className="ThreeColumn CenterVertical">
             <div className="LeftAlign">
-              <IconButton edge="start" color="inherit" onClick={handleDrawerOpen}>
+              <M.IconButton edge="start" color="inherit" onClick={handleDrawerOpen}>
                 <Icon.Menu />
-              </IconButton>
+              </M.IconButton>
               <span className="TitleText">
                 bCards
               </span>
             </div>
-            <Typography className="TitleText CenterAlign" variant="h6" noWrap>
+            <M.Typography className="TitleText CenterAlign" variant="h6" noWrap>
               {deck ? deck.name : "No deck loaded"}
-            </Typography>
+            </M.Typography>
             <span className="AutoWidth RightAlign">
-              <IconButton
+              <M.IconButton
                 color="inherit"
                 onClick={handleAppMenuOpen}
               >
                 <Icon.MoreVert />
-              </IconButton>
+              </M.IconButton>
             </span>
           </div>
-        </Toolbar>
-      </AppBar>
+        </M.Toolbar>
+      </M.AppBar>
       <div className="Page">
         {content}
       </div>
       <React.Fragment>
-        <Menu
+        <M.Menu
           open={appMenuOpen}
           onClose={handleAppMenuClose}
           anchorEl={appMenuAnchor}
         >
-          <MenuItem
+          <M.MenuItem
             onClick={handleNewDeck}
           >
             <Icon.Add className="GrayText" />
             Add Deck
-          </MenuItem>
-          <MenuItem
+          </M.MenuItem>
+          <M.MenuItem
             disabled={!deck}
             onClick={handleDuplicateDeck}
           >
             <Icon.FilterNone className="GrayText" />
             Duplicate Deck
-          </MenuItem>
-          <MenuItem
+          </M.MenuItem>
+          <M.MenuItem
             disabled={!deck}
             onClick={handleRenameDeck}
           >
             <Icon.Edit className="GrayText" />
             Rename Deck
-          </MenuItem>
-          <MenuItem
+          </M.MenuItem>
+          <M.MenuItem
             disabled={!deck}
             onClick={handleDeleteDeck}
           >
             <Icon.Delete className="GrayText" />
             Delete Deck
-          </MenuItem>
-        </Menu>
-        <Drawer anchor="left" open={drawer} onClose={handleDrawerClose}>
+          </M.MenuItem>
+        </M.Menu>
+        <M.Drawer anchor="left" open={drawer} onClose={handleDrawerClose}>
           {drawerContent}
-        </Drawer>
+        </M.Drawer>
         {newDeckDialogContent}
         {deleteDeckDialogContent}
         {duplicateDeckDialogContent}
