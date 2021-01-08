@@ -38,7 +38,7 @@ export default function DeckView(props) {
     const handleFlip = () => { setFlipped(!flipped); };
     const handleDelete = () => { setDialogOpen(true); };
     const handleDeleteConfirm = () => {
-        discreetFlip(props.onDeleteCard(activeId()));
+        discreetFlip(() => props.onDeleteCard(activeId()));
         setSelectedCard(c => c < props.deck.cards.length - 1 ? 
             c : c === 0 ? 0 : c - 1);
         setDialogOpen(false);
@@ -48,10 +48,10 @@ export default function DeckView(props) {
     };
 
     const handleAdvanceCard = () => { 
-        discreetFlip(setSelectedCard(c => c + 1));
+        discreetFlip(() => setSelectedCard(c => c + 1));
     };
     const handleReverseCard = () => { 
-        discreetFlip(setSelectedCard(c => c - 1));
+        discreetFlip(() => setSelectedCard(c => c - 1));
     };
     const handleJumpToEnd = () => {
         setFlipped(false);
@@ -79,11 +79,11 @@ export default function DeckView(props) {
         props.onFlag(activeId()); 
     };
     const handleFlaggedOnlyToggle = () => { 
-        discreetFlip(setSelectedCard(0));
+        discreetFlip(() => setSelectedCard(0));
         props.onFlaggedOnly(); 
     };
     const handleShuffleToggle = () => {
-        discreetFlip(setSelectedCard(0));
+        discreetFlip(() => setSelectedCard(0));
         props.onShuffle();
     }
 
