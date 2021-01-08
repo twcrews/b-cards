@@ -25,16 +25,20 @@ export default function DeckView(props) {
     const lastCard = () => selectedCard === props.deck.cards.length - 1;
     const firstCard = () => selectedCard === 0;
 
+    const discreetFlip = (callback) => {
+        if (flipped) {
+            setFlipped(false);
+            setTimeout(() => callback(), 120);
+        } else {
+            callback();
+        }
+    }
+
     const handleDialogClose = () => { setDialogOpen(false); };
     const handleFlip = () => { setFlipped(!flipped); };
     const handleDelete = () => { setDialogOpen(true); };
     const handleDeleteConfirm = () => {
-        if (flipped) {
-            setFlipped(false);
-            setTimeout(() => { props.onDeleteCard(activeId()); });
-        } else {
-            props.onDeleteCard(activeId());
-        }
+        discreetFlip(() => props.onDeleteCard(activeId()));
         setSelectedCard(c => c < props.deck.cards.length - 1 ? 
             c : c === 0 ? 0 : c - 1);
         setDialogOpen(false);
@@ -44,22 +48,10 @@ export default function DeckView(props) {
     };
 
     const handleAdvanceCard = () => { 
-        if (flipped) {
-            setFlipped(false);
-            setTimeout(() => { setSelectedCard(c => c + 1); }, 120);
-        }
-        else {
-            setSelectedCard(c => c + 1); 
-        }
+        discreetFlip(() => setSelectedCard(c => c + 1));
     };
     const handleReverseCard = () => { 
-        if (flipped) {
-            setFlipped(false);
-            setTimeout(() => { setSelectedCard(c => c - 1); }, 120);
-        }
-        else {
-            setSelectedCard(c => c - 1); 
-        }
+        discreetFlip(() => setSelectedCard(c => c - 1));
     };
     const handleJumpToEnd = () => {
         setFlipped(false);
@@ -87,11 +79,11 @@ export default function DeckView(props) {
         props.onFlag(activeId()); 
     };
     const handleFlaggedOnlyToggle = () => { 
-        setSelectedCard(0);
+        discreetFlip(() => setSelectedCard(0));
         props.onFlaggedOnly(); 
     };
     const handleShuffleToggle = () => {
-        setSelectedCard(0);
+        discreetFlip(() => setSelectedCard(0));
         props.onShuffle();
     }
 
