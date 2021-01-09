@@ -334,11 +334,21 @@ function App() {
                   onClick={() => handleDeckSelected(d)}
                   selected={deck ? deck.id === d.id : false}
                 >
-                  <M.ListItemText
-                    primary={d.name}
-                    secondary={formattedDate(d.modified)}
-                    primaryTypographyProps={{ noWrap: true }}
-                  />
+                  <div className="DrawerItemContent">
+                    <M.ListItemText
+                      primary={d.name}
+                      secondary={formattedDate(d.modified)}
+                      primaryTypographyProps={{ noWrap: true }}
+                    />
+                    <span>
+                      <M.IconButton edge="end">
+                        <Icon.Edit color="disabled" />
+                      </M.IconButton>
+                      <M.IconButton edge="end">
+                        <Icon.Delete color="disabled" />
+                      </M.IconButton>
+                    </span>
+                  </div>
                 </M.ListItem>)}
           </M.List> :
           emptyDrawer}
