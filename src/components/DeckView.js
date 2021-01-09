@@ -153,6 +153,15 @@ export default function DeckView(props) {
                     Last
                 </Button>
             </ButtonGroup>
+            <Button
+                color="primary"
+                variant="contained"
+                startIcon={<Icon.Add />}
+                onClick={handleAddCard}
+                disabled={props.flaggedOnly}
+            >
+                Add Card
+            </Button>
         </div>
     );
 
@@ -176,7 +185,6 @@ export default function DeckView(props) {
                         onEditorChange={handleCardChange}
                         onFlip={handleFlip}
                         onDelete={handleDelete}
-                        onAddCard={handleAddCard}
                         onDuplicate={handleDuplicateCard}
                         number={displayCard()}
                         count={props.deck.cards.length}

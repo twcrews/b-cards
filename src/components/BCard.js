@@ -25,18 +25,7 @@ export default function BCard(props) {
                         {props.number + " of " + props.count}
                     </Typography>
                 </div>
-                <div className="RightAlign">
-                    <Button
-                        className="AutoWidth"
-                        color="inherit"
-                        startIcon={<Icon.Add />}
-                        size="large"
-                        onClick={props.onAddCard}
-                        disabled={props.flaggedOnly}
-                    >
-                        Add Card
-                    </Button>
-                </div>
+                <div className="RightAlign"/>
             </div>
             <div className="CardContent">
                 <div>
