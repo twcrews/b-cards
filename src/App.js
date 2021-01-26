@@ -6,6 +6,7 @@ import EmptyState from './components/EmptyState';
 import DeckView from './components/DeckView';
 
 function App() {
+  /********** STATES **********/
   const [deck, setDeck] = useState(null);
   const [drawer, setDrawer] = useState(false);
   const [newDeckDialog, setNewDeckDialog] = useState(false);
@@ -19,6 +20,28 @@ function App() {
   const [appMenuAnchor, setAppMenuAnchor] = useState(null);
   const [flaggedOnly, setFlaggedOnly] = useState(false);
   const [shuffled, setShuffled] = useState(false);
+
+  /********** FUNCTIONS **********/
+  const uuid = () => {
+    return 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'.replace(/x/g, function (c) {
+      return (Math.random() * 16 | 0).toString(16);
+    });
+  };
+
+  const shuffle = (array) => {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+  
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+  
+    return array;
+  };
 
   const allStorage = () => {
     var storage = [],
@@ -42,17 +65,57 @@ function App() {
       hour: '2-digit',
       minute: '2-digit'
     });
-  }
-
-  useEffect(() => {
-    setDeck(JSON.parse(localStorage.getItem(localStorage.getItem("lastOpen"))));
-  }, []);
+  };
 
   const writeDeck = (newDeck) => {
     newDeck.modified = new Date();
     setDeck(newDeck);
     localStorage.setItem(newDeck.id, JSON.stringify(newDeck));
   };
+
+  const addDeck = (deckName) => {
+    setFlaggedOnly(false);
+    var newId = uuid();
+    var newObj = {
+      name: newId,
+      content: {
+        id: newId,
+        name: deckName,
+        created: new Date(),
+        modified: new Date(),
+        cards: [
+          {
+            id: uuid(),
+            front: "",
+            back: "",
+            flagged: false
+          }
+        ]
+      }
+    }
+    localStorage.setItem(newObj.name, JSON.stringify(newObj.content));
+    handleDeckSelected(newObj.content);
+  };
+
+  const visibleCards = () => {
+    var visibleDeck = { ...deck }
+    if (flaggedOnly) {
+      visibleDeck.cards = deck.cards.filter(c =>
+        c.flagged);
+    }
+    if (shuffled) {
+      var cards = [...visibleDeck.cards];
+      visibleDeck.cards = shuffle(cards);
+    }
+    return visibleDeck;
+  };
+
+  /********** EFFECTS **********/
+  useEffect(() => {
+    setDeck(JSON.parse(localStorage.getItem(localStorage.getItem("lastOpen"))));
+  }, []);
+
+  /********** EVENT HANDLERS **********/
   const handleDrawerOpen = () => { setDrawer(true); };
   const handleDrawerClose = () => { setDrawer(false); };
   const handleNewDeck = () => {
@@ -92,29 +155,6 @@ function App() {
       setNewDeckName('');
       if (openNewDeck) { setDeck(newDeck); }
     }
-  };
-  const addDeck = (deckName) => {
-    setFlaggedOnly(false);
-    var newId = uuid();
-    var newObj = {
-      name: newId,
-      content: {
-        id: newId,
-        name: deckName,
-        created: new Date(),
-        modified: new Date(),
-        cards: [
-          {
-            id: uuid(),
-            front: "",
-            back: "",
-            flagged: false
-          }
-        ]
-      }
-    }
-    localStorage.setItem(newObj.name, JSON.stringify(newObj.content));
-    handleDeckSelected(newObj.content);
   };
   const handleDeckSelected = (deck) => {
     setDrawer(false);
@@ -173,7 +213,6 @@ function App() {
   const handleOpenNewDeckChange = () => {
     setOpenNewDeck(!openNewDeck);
   };
-
   const handleAddCard = (front, back) => {
     var tmpDeck = { ...deck };
     tmpDeck.cards.push({
@@ -205,19 +244,7 @@ function App() {
   const handleFlaggedOnlyToggle = () => { setFlaggedOnly(f => !f); };
   const handleShuffleToggle = () => { setShuffled(s => !s); };
 
-  const visibleCards = () => {
-    var visibleDeck = { ...deck }
-    if (flaggedOnly) {
-      visibleDeck.cards = deck.cards.filter(c =>
-        c.flagged);
-    }
-    if (shuffled) {
-      var cards = [...visibleDeck.cards];
-      visibleDeck.cards = shuffle(cards);
-    }
-    return visibleDeck;
-  };
-
+  /********** UI CONSTANTS **********/
   const emptyDrawer = (
     <div className="EmptyDrawer">
       <M.Typography variant="h6">No decks found</M.Typography>
@@ -341,10 +368,14 @@ function App() {
                       primaryTypographyProps={{ noWrap: true }}
                     />
                     <span>
-                      <M.IconButton edge="end">
+                      <M.IconButton 
+                        edge="end"
+                      >
                         <Icon.Edit color="disabled" />
                       </M.IconButton>
-                      <M.IconButton edge="end">
+                      <M.IconButton 
+                        edge="end"
+                      >
                         <Icon.Delete color="disabled" />
                       </M.IconButton>
                     </span>
@@ -388,6 +419,7 @@ function App() {
       </EmptyState>
   );
 
+  /********** RENDER **********/
   return (
     <div className="App">
       <M.AppBar position="static" elevation={3}>
@@ -462,26 +494,6 @@ function App() {
       </React.Fragment>
     </div>
   );
-}
-
-function uuid() {
-  return 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'.replace(/x/g, function (c) {
-    return (Math.random() * 16 | 0).toString(16);
-  });
-}
-function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
-
-  while (0 !== currentIndex) {
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
 }
 
 export default App;
