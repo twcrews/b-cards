@@ -175,6 +175,12 @@ body {
   gap: 10px;
 }
 
+.GridView {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
 .FlagButtonActive {
   background-color: #ff8c00 !important;
   color: white !important;
