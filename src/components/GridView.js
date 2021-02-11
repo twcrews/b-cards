@@ -22,5 +22,8 @@ export function GridView(props) {
             <Button
                 startIcon={<Add/>}
                 onClick={handleAddCard}
+                variant="contained"
+                color="primary"
+            />
         </div>);
 }
