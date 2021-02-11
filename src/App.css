@@ -51,8 +51,7 @@ body {
 .Page {
   overflow: hidden;
   overflow-y: auto;
-  display: grid;
-  grid-template-rows: 1fr auto;
+  height: 100%;
 }
 
 .TitleText {
@@ -69,7 +68,7 @@ body {
 .Drawer {
   display: grid;
   grid-template-rows: 1fr auto;
-  width: 280px;
+  width: 240px;
   height: 100%;
   overflow: hidden;
 }
@@ -84,15 +83,6 @@ body {
 
 .DrawerButton {
   height: 50px;
-}
-
-.DrawerItemContent {
-  width: 100%;
-  display: grid;
-  grid-template-columns: auto auto;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
 }
 
 .DeckList {
@@ -117,19 +107,22 @@ body {
   font-size: 90px;
 }
 
-.DeckControls {
+.DeckView {
   display: grid;
+  grid-template-rows: 1fr auto;
+  height: 100%;
+}
+
+.DeckControls {
+  display: flex;
   justify-content: center;
-  align-items: center;
-  grid-auto-flow: column;
   padding: 20px;
   gap: 20px;
 }
 
 .CardSpace {
   display: grid;
-  padding: 60px 80px;
-  padding-bottom: 0;
+  padding: 20px 80px 0;
 }
 
 .Card {
@@ -175,12 +168,6 @@ body {
   gap: 10px;
 }
 
-.GridView {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 30px;
-}
-
 .FlagButtonActive {
   background-color: #ff8c00 !important;
   color: white !important;
@@ -192,6 +179,29 @@ body {
 
 .FlagButtonActive:disabled {
   opacity: 0.5 !important;
+}
+
+.EditCardContainer {
+  padding: 20px 80px;
+}
+
+.EditCardFlex {
+  display: flex;
+  gap: 30px;
+}
+
+.EditCard {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  min-height: 200px;
+  text-align: left;
+}
+
+.EditCardContent {
+  text-align: center;
 }
 
 @media screen and (max-width: 600px) {

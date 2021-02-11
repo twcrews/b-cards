@@ -28,22 +28,21 @@ export default function BCard(props) {
                 <div className="RightAlign"/>
             </div>
             <div className="CardContent">
-                <div>
-                    <Editor
-                        id={props.id}
-                        inline
-                        onEditorChange={handleEditorChange}
-                        onKeyUp={(event) => event.preventDefault()}
-                        value={props.content}
-                        init={{
-                            menubar: false,
-                            toolbar: 'undo redo | fontsizeselect | bold italic backcolor | ' +
-                                'alignleft aligncenter alignright alignjustify | ' +
-                                'bullist numlist outdent indent | removeformat',
-                            content_style: 'body { font-family: Roboto; font-size: 1.5em; text-align: center}'
-                        }}
-                    />
-                </div>
+                <Editor
+                    id={props.id}
+                    inline
+                    onEditorChange={handleEditorChange}
+                    onKeyDown={(event) => event.stopPropagation()}
+                    onKeyUp={(event) => event.preventDefault()}
+                    value={props.content}
+                    init={{
+                        menubar: false,
+                        toolbar: 'undo redo | fontsizeselect | bold italic backcolor | ' +
+                            'alignleft aligncenter alignright alignjustify | ' +
+                            'bullist numlist outdent indent | removeformat',
+                        content_style: 'body { font-family: Roboto; font-size: 1.5em; text-align: center}'
+                    }}
+                />
             </div>
             <div className="CardTools ThreeColumn CenterVertical BorderBox">
                 <span className="AutoWidth LeftAlign">

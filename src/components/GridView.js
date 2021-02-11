@@ -1,17 +1,26 @@
 import React from 'react';
-import BCard from './BCard';
+import { CardEdit } from './CardEdit';
+import { Button } from '@material-ui/core';
+import { Add } from '@material-ui/icons';
 
 export function GridView(props) {
-    const handleCardChange = (content, id, flipped) => {
-        props.onChange(content, id, flipped)
-    }
+    const handleCardChange = (content, id, side) => {
+        props.onChange(content, id, side === "back");
+    };
+    const handleAddCard = () => { props.onAddCard(); };
 
     return (
-        <div className="GridView">
-            {props.cards.map(card =>
-                <React.Fragment>
-                </React.Fragment>
+        <div>
+            {props.deck.cards.map(card =>
+                <CardEdit
+                    key={card.id}
+                    card={card}
+                    onChange={(content, side) =>
+                        handleCardChange(content, card.id, side)}
+                />
             )}
-        </div>
-    );
+            <Button
+                startIcon={<Add/>}
+                onClick={handleAddCard}
+        </div>);
 }

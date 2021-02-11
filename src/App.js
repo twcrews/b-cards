@@ -4,6 +4,7 @@ import * as Icon from '@material-ui/icons';
 import './App.css';
 import EmptyState from './components/EmptyState';
 import DeckView from './components/DeckView';
+import { GridView } from './components/GridView';
 
 function App() {
   /********** STATES **********/
@@ -20,6 +21,18 @@ function App() {
   const [appMenuAnchor, setAppMenuAnchor] = useState(null);
   const [flaggedOnly, setFlaggedOnly] = useState(false);
   const [shuffled, setShuffled] = useState(false);
+  const [editing, setEditing] = useState(false);
+
+
+  /********** STATES **********/
+  const freeView =
+    deck &&
+    !drawer &&
+    !newDeckDialog &&
+    !duplicateDeckDialog &&
+    !renameDeckDialog &&
+    !deleteDeckDialog;
+
 
   /********** FUNCTIONS **********/
   const uuid = () => {
@@ -30,16 +43,16 @@ function App() {
 
   const shuffle = (array) => {
     var currentIndex = array.length, temporaryValue, randomIndex;
-  
+
     while (0 !== currentIndex) {
       randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
-  
+
       temporaryValue = array[currentIndex];
       array[currentIndex] = array[randomIndex];
       array[randomIndex] = temporaryValue;
     }
-  
+
     return array;
   };
 
@@ -243,6 +256,7 @@ function App() {
   };
   const handleFlaggedOnlyToggle = () => { setFlaggedOnly(f => !f); };
   const handleShuffleToggle = () => { setShuffled(s => !s); };
+  const handleToggleEdit = () => { setEditing(!editing); };
 
   /********** UI CONSTANTS **********/
   const emptyDrawer = (
@@ -361,25 +375,11 @@ function App() {
                   onClick={() => handleDeckSelected(d)}
                   selected={deck ? deck.id === d.id : false}
                 >
-                  <div className="DrawerItemContent">
-                    <M.ListItemText
-                      primary={d.name}
-                      secondary={formattedDate(d.modified)}
-                      primaryTypographyProps={{ noWrap: true }}
-                    />
-                    <span>
-                      <M.IconButton 
-                        edge="end"
-                      >
-                        <Icon.Edit color="disabled" />
-                      </M.IconButton>
-                      <M.IconButton 
-                        edge="end"
-                      >
-                        <Icon.Delete color="disabled" />
-                      </M.IconButton>
-                    </span>
-                  </div>
+                  <M.ListItemText
+                    primary={d.name}
+                    secondary={formattedDate(d.modified)}
+                    primaryTypographyProps={{ noWrap: true }}
+                  />
                 </M.ListItem>)}
           </M.List> :
           emptyDrawer}
@@ -397,7 +397,17 @@ function App() {
     </div>
   );
 
-  const content = (
+  const emptyState = (
+    <EmptyState
+      onClick={handleNewDeck}
+      button="New Deck"
+      buttonIcon={<Icon.Add />}
+    >
+      Select a Deck from the drawer to get started.
+    </EmptyState>
+  );
+
+  const viewContent = (
     deck ?
       <DeckView
         deck={visibleCards()}
@@ -409,14 +419,65 @@ function App() {
         onShuffle={handleShuffleToggle}
         flaggedOnly={flaggedOnly}
         shuffled={shuffled}
-      /> :
-      <EmptyState
+        focus={freeView}
+      /> : emptyState);
+
+  const editContent = (
+    deck ?
+      <GridView
+        deck={visibleCards()}
+        onChange={handleCardChange}
+        onAddCard={handleAddCard}
+        onDeleteCard={handleDeleteCard}
+        onFlag={handleFlagToggle}
+      /> : emptyState);
+
+  const content = editing ? editContent : viewContent;
+
+  const appMenu = (
+    <M.Menu
+      open={appMenuOpen}
+      onClose={handleAppMenuClose}
+      anchorEl={appMenuAnchor}
+    >
+      <M.MenuItem
         onClick={handleNewDeck}
-        button="New Deck"
-        buttonIcon={<Icon.Add />}
       >
-        Select a Deck from the drawer to get started.
-      </EmptyState>
+        <Icon.Add className="GrayText" />
+      Add Deck
+      </M.MenuItem>
+      <M.MenuItem
+        disabled={!deck}
+        onClick={handleDuplicateDeck}
+      >
+        <Icon.FilterNone className="GrayText" />
+        Duplicate Deck
+      </M.MenuItem>
+      <M.MenuItem
+        disabled={!deck}
+        onClick={handleRenameDeck}
+      >
+        <Icon.Spellcheck className="GrayText" />
+        Rename Deck
+      </M.MenuItem>
+      <M.MenuItem
+        disabled={!deck}
+        onClick={handleToggleEdit}
+      >
+      {editing ?
+        <Icon.Slideshow className="GrayText" /> :
+        <Icon.Edit className="GrayText" />
+      }
+      {editing ? "View Deck" : "Edit Deck"}
+      </M.MenuItem>
+      <M.MenuItem
+        disabled={!deck}
+        onClick={handleDeleteDeck}
+      >
+        <Icon.Delete className="GrayText" />
+        Delete Deck
+      </M.MenuItem>
+    </M.Menu>
   );
 
   /********** RENDER **********/
@@ -451,39 +512,7 @@ function App() {
         {content}
       </div>
       <React.Fragment>
-        <M.Menu
-          open={appMenuOpen}
-          onClose={handleAppMenuClose}
-          anchorEl={appMenuAnchor}
-        >
-          <M.MenuItem
-            onClick={handleNewDeck}
-          >
-            <Icon.Add className="GrayText" />
-            Add Deck
-          </M.MenuItem>
-          <M.MenuItem
-            disabled={!deck}
-            onClick={handleDuplicateDeck}
-          >
-            <Icon.FilterNone className="GrayText" />
-            Duplicate Deck
-          </M.MenuItem>
-          <M.MenuItem
-            disabled={!deck}
-            onClick={handleRenameDeck}
-          >
-            <Icon.Edit className="GrayText" />
-            Rename Deck
-          </M.MenuItem>
-          <M.MenuItem
-            disabled={!deck}
-            onClick={handleDeleteDeck}
-          >
-            <Icon.Delete className="GrayText" />
-            Delete Deck
-          </M.MenuItem>
-        </M.Menu>
+        {appMenu}
         <M.Drawer anchor="left" open={drawer} onClose={handleDrawerClose}>
           {drawerContent}
         </M.Drawer>

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Button, 
-    ButtonGroup, 
-    Dialog, 
-    DialogTitle, 
-    DialogContent, 
-    DialogContentText, 
+    Button,
+    ButtonGroup,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
     DialogActions
-} from '@material-ui/core'; 
+} from '@material-ui/core';
 import * as Icon from '@material-ui/icons';
 import BCard from './BCard.js';
 import ReactCardFlip from 'react-card-flip';
@@ -16,14 +16,15 @@ export default function DeckView(props) {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [flipped, setFlipped] = useState(false);
     const [selectedCard, setSelectedCard] = useState(0);
+
     const displayCard = () => selectedCard + 1;
     const activeId = () => {
         var card = props.deck.cards[selectedCard];
         return card ? card.id : 0;
     }
 
-    const lastCard = () => selectedCard === props.deck.cards.length - 1;
-    const firstCard = () => selectedCard === 0;
+    const lastCard = selectedCard === props.deck.cards.length - 1;
+    const firstCard = selectedCard === 0;
 
     const discreetFlip = (callback) => {
         if (flipped) {
@@ -39,7 +40,7 @@ export default function DeckView(props) {
     const handleDelete = () => { setDialogOpen(true); };
     const handleDeleteConfirm = () => {
         discreetFlip(() => props.onDeleteCard(activeId()));
-        setSelectedCard(c => c < props.deck.cards.length - 1 ? 
+        setSelectedCard(c => c < props.deck.cards.length - 1 ?
             c : c === 0 ? 0 : c - 1);
         setDialogOpen(false);
     };
@@ -47,19 +48,19 @@ export default function DeckView(props) {
         props.onCardChange(content, activeId(), flipped);
     };
 
-    const handleAdvanceCard = () => { 
+    const handleAdvanceCard = () => {
         discreetFlip(() => setSelectedCard(c => c + 1));
     };
-    const handleReverseCard = () => { 
+    const handleReverseCard = () => {
         discreetFlip(() => setSelectedCard(c => c - 1));
     };
     const handleJumpToEnd = () => {
         setFlipped(false);
         setSelectedCard(props.deck.cards.length - 1);
     };
-    const handleJumpToStart = () => { 
+    const handleJumpToStart = () => {
         setFlipped(false);
-        setSelectedCard(0); 
+        setSelectedCard(0);
     };
     const addCard = (frontContent, backContent) => {
         setFlipped(false);
@@ -71,21 +72,58 @@ export default function DeckView(props) {
         addCard(props.deck.cards[selectedCard].front,
             props.deck.cards[selectedCard].back);
     };
-    const handleFlagToggle = () => { 
-        if (props.flaggedOnly && 
+    const handleFlagToggle = () => {
+        if (props.flaggedOnly &&
             props.deck.cards.length - 1 === selectedCard) {
-                setSelectedCard(c => c === 0 ? 0 : c - 1);
+            setSelectedCard(c => c === 0 ? 0 : c - 1);
         }
-        props.onFlag(activeId()); 
+        props.onFlag(activeId());
     };
-    const handleFlaggedOnlyToggle = () => { 
+    const handleFlaggedOnlyToggle = () => {
         discreetFlip(() => setSelectedCard(0));
-        props.onFlaggedOnly(); 
+        props.onFlaggedOnly();
     };
     const handleShuffleToggle = () => {
         discreetFlip(() => setSelectedCard(0));
         props.onShuffle();
     }
+    const handleKeyPress = (event) => {
+        if (props.focus) {
+            switch (event.key) {
+                case "ArrowLeft":
+                    if (!firstCard) {
+                        handleReverseCard();
+                    }
+                    break;
+                case "ArrowRight":
+                    if (!lastCard) {
+                        handleAdvanceCard();
+                    }
+                    break;
+                case "ArrowUp":
+                    if (!firstCard) {
+                        handleJumpToStart();
+                    }
+                    break;
+                case "ArrowDown":
+                    if (!lastCard) {
+                        handleJumpToEnd();
+                    }
+                    break;
+                case " ":
+                    event.preventDefault();
+                    event.stopPropagation();
+                    handleFlip();
+                    break;
+                default: break;
+            }
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener("keydown", handleKeyPress);
+        return () => window.removeEventListener("keydown", handleKeyPress);
+    });
 
     const controls = (
         <div className="DeckControls">
@@ -94,7 +132,7 @@ export default function DeckView(props) {
                     variant="contained"
                     color="primary"
                     startIcon={<Icon.FirstPage />}
-                    disabled={firstCard()}
+                    disabled={firstCard}
                     onClick={handleJumpToStart}
                 >
                     First
@@ -103,7 +141,7 @@ export default function DeckView(props) {
                     variant="contained"
                     color="primary"
                     startIcon={<Icon.ArrowBack />}
-                    disabled={firstCard()}
+                    disabled={firstCard}
                     onClick={handleReverseCard}
                 >
                     Back
@@ -113,8 +151,8 @@ export default function DeckView(props) {
                 <Button
                     variant="contained"
                     color="primary"
-                    startIcon={props.shuffled ? 
-                        <Icon.CheckBox /> : 
+                    startIcon={props.shuffled ?
+                        <Icon.CheckBox /> :
                         <Icon.CheckBoxOutlineBlank />}
                     disabled={props.deck.cards.length === 1}
                     onClick={handleShuffleToggle}
@@ -124,8 +162,8 @@ export default function DeckView(props) {
                 <Button
                     variant="contained"
                     color="primary"
-                    startIcon={props.flaggedOnly ? 
-                        <Icon.CheckBox /> : 
+                    startIcon={props.flaggedOnly ?
+                        <Icon.CheckBox /> :
                         <Icon.CheckBoxOutlineBlank />}
                     disabled={props.deck.cards.filter(c => c.flagged).length < 1}
                     onClick={handleFlaggedOnlyToggle}
@@ -138,7 +176,7 @@ export default function DeckView(props) {
                     variant="contained"
                     color="primary"
                     endIcon={<Icon.ArrowForward />}
-                    disabled={lastCard()}
+                    disabled={lastCard}
                     onClick={handleAdvanceCard}
                 >
                     Next
@@ -147,7 +185,7 @@ export default function DeckView(props) {
                     variant="contained"
                     color="primary"
                     endIcon={<Icon.LastPage />}
-                    disabled={lastCard()}
+                    disabled={lastCard}
                     onClick={handleJumpToEnd}
                 >
                     Last
@@ -171,7 +209,7 @@ export default function DeckView(props) {
     }, [props.deck.id]);
 
     return (
-        <React.Fragment>
+        <div className="DeckView">
             <div className="CardSpace">
                 <ReactCardFlip
                     isFlipped={flipped}
@@ -223,6 +261,6 @@ export default function DeckView(props) {
                 </Dialog>
             </div>
             {controls}
-        </React.Fragment>
+        </div>
     );
 }
