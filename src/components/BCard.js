@@ -36,6 +36,7 @@ export default function BCard(props) {
                     onKeyUp={(event) => event.preventDefault()}
                     value={props.content}
                     init={{
+                        placeholder: "No content",
                         menubar: false,
                         toolbar: 'undo redo | fontsizeselect | bold italic backcolor | ' +
                             'alignleft aligncenter alignright alignjustify | ' +

@@ -6,7 +6,8 @@ import {
     DialogTitle,
     DialogContent,
     DialogContentText,
-    DialogActions
+    DialogActions,
+    Slide
 } from '@material-ui/core';
 import * as Icon from '@material-ui/icons';
 import BCard from './BCard.js';
@@ -16,20 +17,24 @@ export default function DeckView(props) {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [flipped, setFlipped] = useState(false);
     const [selectedCard, setSelectedCard] = useState(0);
+    const [cardIn, setCardIn] = useState(true);
+    const [slideDirection, setSlideDirection] = useState(null);
 
     const displayCard = () => selectedCard + 1;
     const activeId = () => {
-        var card = props.deck.cards[selectedCard];
+        let card = props.deck.cards[selectedCard];
         return card ? card.id : 0;
     }
 
-    const lastCard = selectedCard === props.deck.cards.length - 1;
-    const firstCard = selectedCard === 0;
+    const lastCard = () => props.deck.cards.length - 1;
+
+    const isLastCard = selectedCard === props.deck.cards.length - 1;
+    const isFirstCard = selectedCard === 0;
 
     const discreetFlip = (callback) => {
         if (flipped) {
             setFlipped(false);
-            setTimeout(() => callback(), 120);
+            callback();
         } else {
             callback();
         }
@@ -39,7 +44,7 @@ export default function DeckView(props) {
     const handleFlip = () => { setFlipped(!flipped); };
     const handleDelete = () => { setDialogOpen(true); };
     const handleDeleteConfirm = () => {
-        discreetFlip(() => props.onDeleteCard(activeId()));
+        discreetFlip(() => props.onDeleteCard(selectedCard));
         setSelectedCard(c => c < props.deck.cards.length - 1 ?
             c : c === 0 ? 0 : c - 1);
         setDialogOpen(false);
@@ -49,18 +54,41 @@ export default function DeckView(props) {
     };
 
     const handleAdvanceCard = () => {
-        discreetFlip(() => setSelectedCard(c => c + 1));
+        setSlideDirection("right");
+        setCardIn(false);
+        discreetFlip(() => setTimeout(() => {
+            setSlideDirection("left");
+            setCardIn(true);
+            setSelectedCard(c => c < lastCard() ? 
+                c + 1 : lastCard());
+        }, 230));
     };
     const handleReverseCard = () => {
-        discreetFlip(() => setSelectedCard(c => c - 1));
+        setSlideDirection("left");
+        setCardIn(false);
+        discreetFlip(() => setTimeout(() => {
+            setSlideDirection("right");
+            setCardIn(true);
+            setSelectedCard(c => c > 0 ? c - 1 : 0);
+        }, 230));
     };
     const handleJumpToEnd = () => {
-        setFlipped(false);
-        setSelectedCard(props.deck.cards.length - 1);
+        setSlideDirection("right");
+        setCardIn(false);
+        discreetFlip(() => setTimeout(() => {
+            setSlideDirection("left");
+            setCardIn(true);
+            setSelectedCard(props.deck.cards.length - 1);
+        }, 230));
     };
     const handleJumpToStart = () => {
-        setFlipped(false);
-        setSelectedCard(0);
+        setSlideDirection("left");
+        setCardIn(false);
+        discreetFlip(() => setTimeout(() => {
+            setSlideDirection("right");
+            setCardIn(true);
+            setSelectedCard(0);
+        }, 230));
     };
     const addCard = (frontContent, backContent) => {
         setFlipped(false);
@@ -91,22 +119,22 @@ export default function DeckView(props) {
         if (props.focus) {
             switch (event.key) {
                 case "ArrowLeft":
-                    if (!firstCard) {
+                    if (!isFirstCard) {
                         handleReverseCard();
                     }
                     break;
                 case "ArrowRight":
-                    if (!lastCard) {
+                    if (!isLastCard) {
                         handleAdvanceCard();
                     }
                     break;
                 case "ArrowUp":
-                    if (!firstCard) {
+                    if (!isFirstCard) {
                         handleJumpToStart();
                     }
                     break;
                 case "ArrowDown":
-                    if (!lastCard) {
+                    if (!isLastCard) {
                         handleJumpToEnd();
                     }
                     break;
@@ -132,7 +160,7 @@ export default function DeckView(props) {
                     variant="contained"
                     color="primary"
                     startIcon={<Icon.FirstPage />}
-                    disabled={firstCard}
+                    disabled={isFirstCard}
                     onClick={handleJumpToStart}
                 >
                     First
@@ -141,7 +169,7 @@ export default function DeckView(props) {
                     variant="contained"
                     color="primary"
                     startIcon={<Icon.ArrowBack />}
-                    disabled={firstCard}
+                    disabled={isFirstCard}
                     onClick={handleReverseCard}
                 >
                     Back
@@ -176,7 +204,7 @@ export default function DeckView(props) {
                     variant="contained"
                     color="primary"
                     endIcon={<Icon.ArrowForward />}
-                    disabled={lastCard}
+                    disabled={isLastCard}
                     onClick={handleAdvanceCard}
                 >
                     Next
@@ -185,7 +213,7 @@ export default function DeckView(props) {
                     variant="contained"
                     color="primary"
                     endIcon={<Icon.LastPage />}
-                    disabled={lastCard}
+                    disabled={isLastCard}
                     onClick={handleJumpToEnd}
                 >
                     Last
@@ -211,42 +239,49 @@ export default function DeckView(props) {
     return (
         <div className="DeckView">
             <div className="CardSpace">
-                <ReactCardFlip
-                    isFlipped={flipped}
-                    flipDirection="vertical"
-                    flipSpeedBackToFront={0.3}
-                    flipSpeedFrontToBack={0.3}
-                >
-                    <BCard
-                        id={activeId() + "-front"}
-                        flipped={false}
-                        onEditorChange={handleCardChange}
-                        onFlip={handleFlip}
-                        onDelete={handleDelete}
-                        onDuplicate={handleDuplicateCard}
-                        number={displayCard()}
-                        count={props.deck.cards.length}
-                        content={props.deck.cards[selectedCard]?.front}
-                        flagged={props.deck.cards[selectedCard]?.flagged}
-                        onFlag={handleFlagToggle}
-                        flaggedOnly={props.flaggedOnly}
-                    />
-                    <BCard
-                        id={activeId() + "-back"}
-                        flipped={true}
-                        onEditorChange={handleCardChange}
-                        onFlip={handleFlip}
-                        onDelete={handleDelete}
-                        onAddCard={handleAddCard}
-                        onDuplicate={handleDuplicateCard}
-                        number={displayCard()}
-                        count={props.deck.cards.length}
-                        content={props.deck.cards[selectedCard]?.back}
-                        flagged={props.deck.cards[selectedCard]?.flagged}
-                        onFlag={handleFlagToggle}
-                        flaggedOnly={props.flaggedOnly}
-                    />
-                </ReactCardFlip>
+                <Slide 
+                    in={cardIn}
+                    direction={slideDirection}>
+                    <div
+                        style={{height: "100%"}}>
+                    <ReactCardFlip
+                        isFlipped={flipped}
+                        flipDirection="vertical"
+                        flipSpeedBackToFront={0.3}
+                        flipSpeedFrontToBack={0.3}
+                    >
+                        <BCard
+                            id={activeId() + "-front"}
+                            flipped={false}
+                            onEditorChange={handleCardChange}
+                            onFlip={handleFlip}
+                            onDelete={handleDelete}
+                            onDuplicate={handleDuplicateCard}
+                            number={displayCard()}
+                            count={props.deck.cards.length}
+                            content={props.deck.cards[selectedCard]?.front}
+                            flagged={props.deck.cards[selectedCard]?.flagged}
+                            onFlag={handleFlagToggle}
+                            flaggedOnly={props.flaggedOnly}
+                        />
+                        <BCard
+                            id={activeId() + "-back"}
+                            flipped={true}
+                            onEditorChange={handleCardChange}
+                            onFlip={handleFlip}
+                            onDelete={handleDelete}
+                            onAddCard={handleAddCard}
+                            onDuplicate={handleDuplicateCard}
+                            number={displayCard()}
+                            count={props.deck.cards.length}
+                            content={props.deck.cards[selectedCard]?.back}
+                            flagged={props.deck.cards[selectedCard]?.flagged}
+                            onFlag={handleFlagToggle}
+                            flaggedOnly={props.flaggedOnly}
+                        />
+                    </ReactCardFlip>
+                    </div>
+                </Slide>
                 <Dialog open={dialogOpen} onClose={handleDialogClose}>
                     <DialogTitle>Delete this card?</DialogTitle>
                     <DialogContent>

@@ -1,5 +1,8 @@
-body {
+html {
   background: #eee;
+}
+
+body {
   margin: 0;
   font-family: Roboto;
 }
@@ -32,13 +35,6 @@ body {
 
 .CenterVertical {
   align-items: center;
-}
-
-.App {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  overflow: hidden;
-  height: 100vh;
 }
 
 .AppTitle {
@@ -107,10 +103,18 @@ body {
   font-size: 90px;
 }
 
+.react-card-flip {
+  height: 100%;
+  box-sizing: border-box;
+}
+
 .DeckView {
+  position: absolute;
+  height: calc(100% - 64px);
+  width: 100%;
   display: grid;
   grid-template-rows: 1fr auto;
-  height: 100%;
+  overflow-x: hidden;
 }
 
 .DeckControls {
@@ -143,6 +147,10 @@ body {
   align-items: center;
   padding: 40px;
   overflow: auto;
+}
+
+.mce-content-body {
+  text-align: center;
 }
 
 .mce-content-body:hover {
@@ -182,12 +190,13 @@ body {
 }
 
 .EditCardContainer {
-  padding: 20px 80px;
+  padding: 10px 80px;
 }
 
 .EditCardFlex {
   display: flex;
   gap: 30px;
+  align-items: flex-start;
 }
 
 .EditCard {
@@ -200,8 +209,8 @@ body {
   text-align: left;
 }
 
-.EditCardContent {
-  text-align: center;
+.EditControls {
+  text-align: right;
 }
 
 @media screen and (max-width: 600px) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import * as M from '@material-ui/core';
+import * as Material from '@material-ui/core';
 import * as Icon from '@material-ui/icons';
 import './App.css';
 import EmptyState from './components/EmptyState';
@@ -17,7 +17,7 @@ function App() {
   const [newDeckName, setNewDeckName] = useState('');
   const [renameDeckName, setRenameDeckName] = useState('');
   const [openNewDeck, setOpenNewDeck] = useState(false);
-  const [appMenuOpen, setAppMenuOpen] = useState(false);
+  const [appMenu, setAppMenu] = useState(false);
   const [appMenuAnchor, setAppMenuAnchor] = useState(null);
   const [flaggedOnly, setFlaggedOnly] = useState(false);
   const [shuffled, setShuffled] = useState(false);
@@ -133,11 +133,11 @@ function App() {
   const handleDrawerClose = () => { setDrawer(false); };
   const handleNewDeck = () => {
     setNewDeckDialog(true);
-    setAppMenuOpen(false);
+    setAppMenu(false);
   };
   const handleDuplicateDeck = () => {
     setDuplicateDeckDialog(true);
-    setAppMenuOpen(false);
+    setAppMenu(false);
   };
   const handleNewDeckDialogClose = () => { setNewDeckDialog(false); };
   const handleDuplicateDeckDialogClose = () => { setDuplicateDeckDialog(false); };
@@ -184,7 +184,7 @@ function App() {
     writeDeck(tmpDeck);
   };
   const handleRenameDeck = () => {
-    setAppMenuOpen(false);
+    setAppMenu(false);
     setRenameDeckName(deck.name);
     setRenameDeckDialog(true);
   }
@@ -207,7 +207,7 @@ function App() {
     }
   }
   const handleDeleteDeck = () => {
-    setAppMenuOpen(false);
+    setAppMenu(false);
     setDeleteDeckDialog(true);
   }
   const handleDeleteDeckDialogClose = () => {
@@ -220,9 +220,9 @@ function App() {
   };
   const handleAppMenuOpen = (event) => {
     setAppMenuAnchor(event.currentTarget);
-    setAppMenuOpen(true);
+    setAppMenu(true);
   };
-  const handleAppMenuClose = () => { setAppMenuOpen(false); };
+  const handleAppMenuClose = () => { setAppMenu(false); };
   const handleOpenNewDeckChange = () => {
     setOpenNewDeck(!openNewDeck);
   };
@@ -237,6 +237,7 @@ function App() {
     writeDeck(tmpDeck);
   };
   const handleDeleteCard = (index) => {
+    console.log("Deleting card with index " + index);
     if (deck.cards.length === 1) {
       handleDeleteDeckConfirm();
     } else {
@@ -256,67 +257,70 @@ function App() {
   };
   const handleFlaggedOnlyToggle = () => { setFlaggedOnly(f => !f); };
   const handleShuffleToggle = () => { setShuffled(s => !s); };
-  const handleToggleEdit = () => { setEditing(!editing); };
+  const handleToggleEdit = () => { 
+    setAppMenu(false);
+    setEditing(!editing); 
+  };
 
   /********** UI CONSTANTS **********/
   const emptyDrawer = (
     <div className="EmptyDrawer">
-      <M.Typography variant="h6">No decks found</M.Typography>
+      <Material.Typography variant="h6">No decks found</Material.Typography>
     </div>
   );
 
   const deleteDeckDialogContent = (
-    <M.Dialog open={deleteDeckDialog} onClose={handleDeleteDeckDialogClose}>
-      <M.DialogTitle>Delete "{deck ? deck.name : null}"?</M.DialogTitle>
-      <M.DialogContent>
-        <M.DialogContentText>
+    <Material.Dialog open={deleteDeckDialog} onClose={handleDeleteDeckDialogClose}>
+      <Material.DialogTitle>Delete "{deck ? deck.name : null}"?</Material.DialogTitle>
+      <Material.DialogContent>
+        <Material.DialogContentText>
           This deck will be deleted forever (a really long time).
-        </M.DialogContentText>
-      </M.DialogContent>
-      <M.DialogActions>
-        <M.Button onClick={handleDeleteDeckDialogClose}>Cancel</M.Button>
-        <M.Button color="secondary" onClick={handleDeleteDeckConfirm}>Delete</M.Button>
-      </M.DialogActions>
-    </M.Dialog>
+        </Material.DialogContentText>
+      </Material.DialogContent>
+      <Material.DialogActions>
+        <Material.Button onClick={handleDeleteDeckDialogClose}>Cancel</Material.Button>
+        <Material.Button color="secondary" onClick={handleDeleteDeckConfirm}>Delete</Material.Button>
+      </Material.DialogActions>
+    </Material.Dialog>
   );
 
   const newDeckDialogContent = (
-    <M.Dialog open={newDeckDialog} onClose={handleNewDeckDialogClose}>
+    <Material.Dialog open={newDeckDialog} onClose={handleNewDeckDialogClose}>
       <form onSubmit={handleNewDeckConfirm}>
-        <M.DialogTitle>New Deck</M.DialogTitle>
-        <M.DialogContent>
-          <M.TextField
+        <Material.DialogTitle>New Deck</Material.DialogTitle>
+        <Material.DialogContent>
+          <Material.TextField
             autoFocus
             label="Deck name"
             value={newDeckName}
             onChange={handleNewDeckNameChange} />
-        </M.DialogContent>
-        <M.DialogActions>
-          <M.Button onClick={handleNewDeckDialogClose}>Cancel</M.Button>
-          <M.Button
+        </Material.DialogContent>
+        <Material.DialogActions>
+          <Material.Button onClick={handleNewDeckDialogClose}>Cancel</Material.Button>
+          <Material.Button
             disabled={!newDeckName.trim()}
             type="submit"
           >
             Add
-            </M.Button>
-        </M.DialogActions>
+            </Material.Button>
+        </Material.DialogActions>
       </form>
-    </M.Dialog>
+    </Material.Dialog>
   );
 
   const duplicateDeckDialogContent = (
-    <M.Dialog open={duplicateDeckDialog} onClose={handleDuplicateDeckDialogClose}>
+    <Material.Dialog open={duplicateDeckDialog} onClose={handleDuplicateDeckDialogClose}>
       <form onSubmit={handleDuplicateDeckConfirm}>
-        <M.DialogTitle>Duplicate "{deck ? deck.name : null}"</M.DialogTitle>
-        <M.DialogContent className="DialogGrid">
-          <M.TextField
+        <Material.DialogTitle>Duplicate "{deck ? deck.name : null}"</Material.DialogTitle>
+        <Material.DialogContent className="DialogGrid">
+          <Material.TextField
             autoFocus
             label="Deck name"
             value={newDeckName}
             onChange={handleNewDeckNameChange} />
-          <M.FormControlLabel
+          <Material.FormControlLabel
             control={
-              <M.Checkbox
+              <Material.Checkbox
                 checked={openNewDeck}
                 onChange={handleOpenNewDeckChange}
                 color="primary"
@@ -324,67 +328,67 @@ function App() {
             }
             label={"Open " + (newDeckName ? newDeckName : "new deck")}
           />
-        </M.DialogContent>
-        <M.DialogActions>
-          <M.Button onClick={handleDuplicateDeckDialogClose}>Cancel</M.Button>
-          <M.Button
+        </Material.DialogContent>
+        <Material.DialogActions>
+          <Material.Button onClick={handleDuplicateDeckDialogClose}>Cancel</Material.Button>
+          <Material.Button
             disabled={!newDeckName.trim()}
             type="submit"
           >
             Add
-            </M.Button>
-        </M.DialogActions>
+            </Material.Button>
+        </Material.DialogActions>
       </form>
-    </M.Dialog>
+    </Material.Dialog>
   );
 
   const renameDeckDialogContent = (
-    <M.Dialog open={renameDeckDialog} onClose={handleRenameDeckDialogClose}>
+    <Material.Dialog open={renameDeckDialog} onClose={handleRenameDeckDialogClose}>
       <form onSubmit={handleRenameDeckConfirm}>
-        <M.DialogTitle>Rename Deck</M.DialogTitle>
-        <M.DialogContent>
-          <M.TextField
+        <Material.DialogTitle>Rename Deck</Material.DialogTitle>
+        <Material.DialogContent>
+          <Material.TextField
             autoFocus
             label="Deck name"
             value={renameDeckName}
             onChange={handleRenameDeckNameChanged} />
-        </M.DialogContent>
-        <M.DialogActions>
-          <M.Button onClick={handleRenameDeckDialogClose}>Cancel</M.Button>
-          <M.Button
+        </Material.DialogContent>
+        <Material.DialogActions>
+          <Material.Button onClick={handleRenameDeckDialogClose}>Cancel</Material.Button>
+          <Material.Button
             disabled={!renameDeckName.trim() || renameDeckName === deck.name}
             type="submit"
           >
             Rename
-            </M.Button>
-        </M.DialogActions>
+            </Material.Button>
+        </Material.DialogActions>
       </form>
-    </M.Dialog>
+    </Material.Dialog>
   );
 
   const drawerContent = (
     <div className="Drawer">
       <div className="DeckList">
         {allStorage() && allStorage().length > 0 ?
-          <M.List>
+          <Material.List>
             {allStorage().sort((a, b) =>
               (a.modified < b.modified) ? 1 : -1).map((d) =>
-                <M.ListItem
+                <Material.ListItem
                   key={d.id}
                   button
                   onClick={() => handleDeckSelected(d)}
                   selected={deck ? deck.id === d.id : false}
                 >
-                  <M.ListItemText
+                  <Material.ListItemText
                     primary={d.name}
                     secondary={formattedDate(d.modified)}
                     primaryTypographyProps={{ noWrap: true }}
                   />
-                </M.ListItem>)}
-          </M.List> :
+                </Material.ListItem>)}
+          </Material.List> :
           emptyDrawer}
       </div>
-      <M.Button
+      <Material.Button
         className="DrawerButton"
         disableElevation
         startIcon={<Icon.Add />}
@@ -393,7 +397,7 @@ function App() {
         variant="contained"
       >
         New Deck
-      </M.Button>
+      </Material.Button>
     </div>
   );
 
@@ -434,33 +438,33 @@ function App() {
 
   const content = editing ? editContent : viewContent;
 
-  const appMenu = (
-    <M.Menu
-      open={appMenuOpen}
+  const appMenuContent = (
+    <Material.Menu
+      open={appMenu}
       onClose={handleAppMenuClose}
       anchorEl={appMenuAnchor}
     >
-      <M.MenuItem
+      <Material.MenuItem
         onClick={handleNewDeck}
       >
         <Icon.Add className="GrayText" />
       Add Deck
-      </M.MenuItem>
-      <M.MenuItem
+      </Material.MenuItem>
+      <Material.MenuItem
         disabled={!deck}
         onClick={handleDuplicateDeck}
       >
         <Icon.FilterNone className="GrayText" />
         Duplicate Deck
-      </M.MenuItem>
-      <M.MenuItem
+      </Material.MenuItem>
+      <Material.MenuItem
         disabled={!deck}
         onClick={handleRenameDeck}
       >
         <Icon.Spellcheck className="GrayText" />
         Rename Deck
-      </M.MenuItem>
-      <M.MenuItem
+      </Material.MenuItem>
+      <Material.MenuItem
         disabled={!deck}
         onClick={handleToggleEdit}
       >
@@ -469,53 +473,53 @@ function App() {
         <Icon.Edit className="GrayText" />
       }
       {editing ? "View Deck" : "Edit Deck"}
-      </M.MenuItem>
-      <M.MenuItem
+      </Material.MenuItem>
+      <Material.MenuItem
         disabled={!deck}
         onClick={handleDeleteDeck}
       >
         <Icon.Delete className="GrayText" />
         Delete Deck
-      </M.MenuItem>
-    </M.Menu>
+      </Material.MenuItem>
+    </Material.Menu>
   );
 
   /********** RENDER **********/
   return (
     <div className="App">
-      <M.AppBar position="static" elevation={3}>
-        <M.Toolbar>
+      <Material.AppBar position="sticky" elevation={3}>
+        <Material.Toolbar>
           <div className="ThreeColumn CenterVertical">
             <div className="LeftAlign">
-              <M.IconButton edge="start" color="inherit" onClick={handleDrawerOpen}>
+              <Material.IconButton edge="start" color="inherit" onClick={handleDrawerOpen}>
                 <Icon.Menu />
-              </M.IconButton>
+              </Material.IconButton>
               <span className="TitleText">
                 bCards
               </span>
             </div>
-            <M.Typography className="TitleText CenterAlign" variant="h6" noWrap>
+            <Material.Typography className="TitleText CenterAlign" variant="h6" noWrap>
               {deck ? deck.name : "No deck loaded"}
-            </M.Typography>
+            </Material.Typography>
             <span className="AutoWidth RightAlign">
-              <M.IconButton
+              <Material.IconButton
                 color="inherit"
                 onClick={handleAppMenuOpen}
               >
                 <Icon.MoreVert />
-              </M.IconButton>
+              </Material.IconButton>
             </span>
           </div>
-        </M.Toolbar>
-      </M.AppBar>
+        </Material.Toolbar>
+      </Material.AppBar>
       <div className="Page">
         {content}
       </div>
       <React.Fragment>
-        {appMenu}
-        <M.Drawer anchor="left" open={drawer} onClose={handleDrawerClose}>
+        {appMenuContent}
+        <Material.Drawer anchor="left" open={drawer} onClose={handleDrawerClose}>
           {drawerContent}
-        </M.Drawer>
+        </Material.Drawer>
         {newDeckDialogContent}
         {deleteDeckDialogContent}
         {duplicateDeckDialogContent}

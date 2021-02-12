@@ -10,7 +10,7 @@ export function GridView(props) {
     const handleAddCard = () => { props.onAddCard(); };
 
     return (
-        <div>
+        <div style={{marginBottom: "80px"}}>
             {props.deck.cards.map(card =>
                 <CardEdit
                     key={card.id}
@@ -20,10 +20,14 @@ export function GridView(props) {
                 />
             )}
             <Button
+                style={{marginTop: "40px"}}
+                size="large"
                 startIcon={<Add/>}
                 onClick={handleAddCard}
                 variant="contained"
                 color="primary"
-            />
+            >
+                Add Card
+            </Button>
         </div>);
 }

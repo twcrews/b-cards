@@ -1,8 +1,12 @@
 import { Editor } from '@tinymce/tinymce-react';
 import * as Material from '@material-ui/core';
-import React from 'react';
+import * as Icon from '@material-ui/icons';
+import React, { useState } from 'react';
 
 export function CardEdit(props) {
+const [focused, setFocused] = useState(false);
+
+    const handleLostFocus = () => { setFocused(false) }
     const handleEditorChange = (content, _editor, side) => {
         if (content !== "" && content !== props.content) {
             props.onChange(content, side);
@@ -26,13 +30,16 @@ export function CardEdit(props) {
                         </Material.Typography>
                         <div className="EditCardContent">
                         <Editor
+                            style={{textAlign: "center"}}
                             id={props.card.id + "-" + side}
                             inline
                             onEditorChange={(content, editor) => handleEditorChange(content, editor, side)}
                             onKeyDown={(event) => event.stopPropagation()}
                             onKeyUp={(event) => event.preventDefault()}
+                            onBlur={handleLostFocus}
                             value={props.card[side]}
                             init={{
+                                placeholder: "No content",
                                 menubar: false,
                                 toolbar: 'undo redo | fontsizeselect | bold italic backcolor | ' +
                                     'alignleft aligncenter alignright alignjustify | ' +
@@ -45,7 +52,15 @@ export function CardEdit(props) {
                 )}
             </div>
             <div className="EditControls">
-                
+                <Material.IconButton>
+                    <Icon.Flag/>
+                </Material.IconButton>
+                <Material.IconButton>
+                    <Icon.Backspace/>
+                </Material.IconButton>
+                <Material.IconButton>
+                    <Icon.Delete/>
+                </Material.IconButton>
             </div>
         </div>
     );
