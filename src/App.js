@@ -24,7 +24,7 @@ function App() {
   const [editing, setEditing] = useState(false);
 
 
-  /********** STATES **********/
+  /********** CONSTANTS **********/
   const freeView =
     deck &&
     !drawer &&
@@ -237,7 +237,6 @@ function App() {
     writeDeck(tmpDeck);
   };
   const handleDeleteCard = (index) => {
-    console.log("Deleting card with index " + index);
     if (deck.cards.length === 1) {
       handleDeleteDeckConfirm();
     } else {
@@ -434,6 +433,7 @@ function App() {
         onAddCard={handleAddCard}
         onDeleteCard={handleDeleteCard}
         onFlag={handleFlagToggle}
+        onDelete={handleDeleteCard}
       /> : emptyState);
 
   const content = editing ? editContent : viewContent;
@@ -489,8 +489,19 @@ function App() {
     <div className="App">
       <Material.AppBar position="sticky" elevation={3}>
         <Material.Toolbar>
-          <div className="ThreeColumn CenterVertical">
-            <div className="LeftAlign">
+          <div style={{
+            display: "flex", 
+            width: "100%", 
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}>
+            <div 
+              className="LeftAlign"
+              style={{
+                display: "flex",
+                alignItems: "center"
+              }}
+            >
               <Material.IconButton edge="start" color="inherit" onClick={handleDrawerOpen}>
                 <Icon.Menu />
               </Material.IconButton>

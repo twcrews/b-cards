@@ -14,7 +14,6 @@ import BCard from './BCard.js';
 import ReactCardFlip from 'react-card-flip';
 
 export default function DeckView(props) {
-    const [dialogOpen, setDialogOpen] = useState(false);
     const [flipped, setFlipped] = useState(false);
     const [selectedCard, setSelectedCard] = useState(0);
     const [cardIn, setCardIn] = useState(true);
@@ -39,16 +38,7 @@ export default function DeckView(props) {
             callback();
         }
     }
-
-    const handleDialogClose = () => { setDialogOpen(false); };
     const handleFlip = () => { setFlipped(!flipped); };
-    const handleDelete = () => { setDialogOpen(true); };
-    const handleDeleteConfirm = () => {
-        discreetFlip(() => props.onDeleteCard(selectedCard));
-        setSelectedCard(c => c < props.deck.cards.length - 1 ?
-            c : c === 0 ? 0 : c - 1);
-        setDialogOpen(false);
-    };
     const handleCardChange = (content) => {
         props.onCardChange(content, activeId(), flipped);
     };
@@ -255,7 +245,6 @@ export default function DeckView(props) {
                             flipped={false}
                             onEditorChange={handleCardChange}
                             onFlip={handleFlip}
-                            onDelete={handleDelete}
                             onDuplicate={handleDuplicateCard}
                             number={displayCard()}
                             count={props.deck.cards.length}
@@ -269,7 +258,6 @@ export default function DeckView(props) {
                             flipped={true}
                             onEditorChange={handleCardChange}
                             onFlip={handleFlip}
-                            onDelete={handleDelete}
                             onAddCard={handleAddCard}
                             onDuplicate={handleDuplicateCard}
                             number={displayCard()}
@@ -282,18 +270,6 @@ export default function DeckView(props) {
                     </ReactCardFlip>
                     </div>
                 </Slide>
-                <Dialog open={dialogOpen} onClose={handleDialogClose}>
-                    <DialogTitle>Delete this card?</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            This card will be deleted forever (a really long time).
-                    </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleDialogClose}>Cancel</Button>
-                        <Button color="secondary" onClick={handleDeleteConfirm}>Delete</Button>
-                    </DialogActions>
-                </Dialog>
             </div>
             {controls}
         </div>

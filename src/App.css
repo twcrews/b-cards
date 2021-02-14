@@ -27,12 +27,6 @@ body {
   width: auto;
 }
 
-.ThreeColumn {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  width: 100%;
-}
-
 .CenterVertical {
   align-items: center;
 }
@@ -136,6 +130,8 @@ body {
 }
 
 .CardHeader {
+  display: flex;
+  justify-content: space-between;
   padding: 20px 40px;
   color: #444;
   cursor: default;
@@ -149,15 +145,17 @@ body {
   overflow: auto;
 }
 
+.CardContent p {
+  font-size: 18pt;
+}
+
 .mce-content-body {
   text-align: center;
 }
 
-.mce-content-body:hover {
-  background-color: #e6f2ff;
-}
-
 .CardTools {
+  display: flex;
+  justify-content: space-between;
   border-top: 1px solid #ddd;
   padding: 20px 40px;
 }
@@ -209,8 +207,18 @@ body {
   text-align: left;
 }
 
+.EditCardContent {
+  text-align: center;
+  font-size: 18pt;
+}
+
+.EditCardContent:hover {
+  background-color: #e6f2ff;
+}
+
 .EditControls {
   text-align: right;
+  margin-top: 5px;
 }
 
 @media screen and (max-width: 600px) {

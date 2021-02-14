@@ -8,15 +8,19 @@ export function GridView(props) {
         props.onChange(content, id, side === "back");
     };
     const handleAddCard = () => { props.onAddCard(); };
+    const handleFlag = (id) => { props.onFlag(id); };
+    const handleDelete = (index) => { props.onDelete(index); };
 
     return (
         <div style={{marginBottom: "80px"}}>
-            {props.deck.cards.map(card =>
+            {props.deck.cards.map((card, index) =>
                 <CardEdit
                     key={card.id}
                     card={card}
                     onChange={(content, side) =>
                         handleCardChange(content, card.id, side)}
+                    onFlag={handleFlag}
+                    onDelete={() => handleDelete(index)}
                 />
             )}
             <Button

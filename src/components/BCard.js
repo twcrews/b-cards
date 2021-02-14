@@ -1,20 +1,15 @@
 import React from 'react';
 import Card from '@material-ui/core/Card';
-import { Editor } from '@tinymce/tinymce-react';
 import { Button, Typography } from '@material-ui/core';
 import * as Icon from '@material-ui/icons';
+import ReactHtmlParser from 'react-html-parser';
 
 export default function BCard(props) {
-    const handleEditorChange = (content, _editor) => {
-        if (content !== "" && content !== props.content) {
-            props.onEditorChange(content);
-        }
-    };
     const handleFlagToggle = () => { props.onFlag(); }
 
     return (
         <Card elevation={3} square className="Card">
-            <div className="CardHeader BorderBox CenterVertical ThreeColumn">
+            <div className="CardHeader BorderBox CenterVertical">
                 <div className="LeftAlign">
                     <Typography variant="h6">
                         {props.flipped ? "Back" : "Front"}
@@ -28,24 +23,9 @@ export default function BCard(props) {
                 <div className="RightAlign"/>
             </div>
             <div className="CardContent">
-                <Editor
-                    id={props.id}
-                    inline
-                    onEditorChange={handleEditorChange}
-                    onKeyDown={(event) => event.stopPropagation()}
-                    onKeyUp={(event) => event.preventDefault()}
-                    value={props.content}
-                    init={{
-                        placeholder: "No content",
-                        menubar: false,
-                        toolbar: 'undo redo | fontsizeselect | bold italic backcolor | ' +
-                            'alignleft aligncenter alignright alignjustify | ' +
-                            'bullist numlist outdent indent | removeformat',
-                        content_style: 'body { font-family: Roboto; font-size: 1.5em; text-align: center}'
-                    }}
-                />
+                <div>{ReactHtmlParser(props.content)}</div>
             </div>
-            <div className="CardTools ThreeColumn CenterVertical BorderBox">
+            <div className="CardTools CenterVertical BorderBox">
                 <span className="AutoWidth LeftAlign">
                     <Button
                         onClick={props.onDuplicate}
@@ -75,13 +55,6 @@ export default function BCard(props) {
                         size="large"
                     >
                         Flip
-                    </Button>
-                    <Button
-                        onClick={props.onDelete}
-                        startIcon={<Icon.Delete />}
-                        size="large"
-                    >
-                        Delete
                     </Button>
                 </div>
             </div>
