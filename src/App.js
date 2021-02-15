@@ -150,6 +150,7 @@ function App() {
     event.preventDefault();
     event.stopPropagation();
     if (newDeckName.trim()) {
+      setEditing(true);
       setNewDeckDialog(false);
       addDeck(newDeckName.trim());
       setNewDeckName('');
@@ -175,7 +176,7 @@ function App() {
     localStorage.setItem("lastOpen", deck.id);
   };
   const handleCardChange = (content, id, flipped) => {
-    var tmpDeck = { ...deck };
+    let tmpDeck = { ...deck };
     if (flipped) {
       tmpDeck.cards.find(c => c.id === id).back = content;
     } else {

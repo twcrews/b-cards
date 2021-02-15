@@ -2,7 +2,7 @@
   "name": "b-cards",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://www.crews.dev/b-cards",
+  "homepage": ".",
   "dependencies": {
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
@@ -31,7 +31,7 @@
     "workbox-streams": "^5.1.4"
   },
   "scripts": {
-    "start": "SET PUBLIC_URL=.&& react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

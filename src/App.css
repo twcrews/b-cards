@@ -56,17 +56,17 @@ body {
 }
 
 .Drawer {
-  display: grid;
-  grid-template-rows: 1fr auto;
+  display: flex;
+  flex-direction: column;
   width: 240px;
   height: 100%;
   overflow: hidden;
 }
 
 .EmptyDrawer {
-  display: grid;
+  display: flex;
   align-items: center;
-  text-align: center;
+  justify-content: center;
   color: #aaa;
   height: 100%;
 }
@@ -210,6 +210,7 @@ body {
 .EditCardContent {
   text-align: center;
   font-size: 18pt;
+  position: relative;
 }
 
 .EditCardContent:hover {
@@ -219,6 +220,13 @@ body {
 .EditControls {
   text-align: right;
   margin-top: 5px;
+}
+
+.CenterAbsolute {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 @media screen and (max-width: 600px) {
