@@ -1,7 +1,12 @@
 {
     "short_name": "bCards",
-    "name": "bCards - Offline Flash Cards",
+    "name": "bCards",
     "icons": [
+      {
+        "src": "./icons/favicon-512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      },
       {
         "src": "./icons/favicon-196.png",
         "sizes": "196x196",
@@ -40,6 +45,6 @@
     ],
     "start_url": "./index.html",
     "display": "standalone",
-    "theme_color": "#000000",
-    "background_color": "#eeeeee"
+    "theme_color": "#ffffff",
+    "background_color": "#4152af"
   }
