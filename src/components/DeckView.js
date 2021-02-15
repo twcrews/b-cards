@@ -2,11 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
     Button,
     ButtonGroup,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogContentText,
-    DialogActions,
     Slide
 } from '@material-ui/core';
 import * as Icon from '@material-ui/icons';
