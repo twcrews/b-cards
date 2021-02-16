@@ -448,8 +448,14 @@ function App() {
           onClick={handleToggleEdit}
         >
           {editing ?
-            <Icon.Slideshow style={{ color: "#fff" }} /> :
-            <Icon.Edit style={{ color: "#fff" }} />
+            <Icon.Slideshow style={{ 
+              color: "#fff",
+              opacity: deck ? 1 : 0.5 
+            }} /> :
+            <Icon.Edit style={{ 
+              color: "#fff",
+              opacity: deck ? 1 : 0.5 
+            }} />
           }
         </Material.IconButton>
       </Material.Tooltip>
@@ -458,7 +464,10 @@ function App() {
           disabled={!deck}
           onClick={handleRenameDeck}
         >
-          <Icon.Spellcheck style={{ color: "#fff" }} />
+          <Icon.Spellcheck style={{ 
+              color: "#fff",
+              opacity: deck ? 1 : 0.5 
+            }} />
         </Material.IconButton>
       </Material.Tooltip>
       <Material.Tooltip title="Duplicate deck">
@@ -466,7 +475,10 @@ function App() {
           disabled={!deck}
           onClick={handleDuplicateDeck}
         >
-          <Icon.FilterNone style={{ color: "#fff" }} />
+          <Icon.FilterNone style={{ 
+              color: "#fff",
+              opacity: deck ? 1 : 0.5 
+            }} />
         </Material.IconButton>
       </Material.Tooltip>
       <Material.Tooltip title="Delete deck">
@@ -475,7 +487,10 @@ function App() {
           onClick={handleDeleteDeck}
           edge="end"
         >
-          <Icon.Delete style={{ color: "#fff" }} />
+          <Icon.Delete style={{ 
+              color: "#fff",
+              opacity: deck ? 1 : 0.5 
+            }} />
         </Material.IconButton>
       </Material.Tooltip>
     </div>
