@@ -68,6 +68,7 @@ export function CardEdit(props) {
                                 onEditorChange={(content, editor) => handleEditorChange(content, editor, side)}
                                 onKeyDown={(event) => event.stopPropagation()}
                                 onKeyUp={(event) => event.preventDefault()}
+                                onFocus={() => handleFocus(side)}
                                 onBlur={() => handleBlur(side)}
                                 value={props.card[side]}
                                 init={{

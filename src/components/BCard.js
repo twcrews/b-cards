@@ -31,7 +31,6 @@ export default function BCard(props) {
                             variant={props.flagged ? "contained" : "text"}
                             startIcon={<Icon.Flag color="inherit" />}
                             onClick={handleFlagToggle}
-                            size="large"
                             disableElevation
                         >
                             {props.flagged ? "Flagged" : "Flag"}
@@ -42,15 +41,10 @@ export default function BCard(props) {
             <div className="CardContent">
                 <div>{ReactHtmlParser(props.content)}</div>
             </div>
-            <div style={{
-                borderTop: "1px solid #ddd",
-                padding: "20px 40px",
-                textAlign: "center"
-            }}>
+            <div className="CardTools">
                 <Button
                     onClick={props.onFlip}
                     startIcon={<Icon.Refresh />}
-                    size="large"
                 >
                     Flip
                     </Button>

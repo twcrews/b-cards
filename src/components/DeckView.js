@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import {
     Button,
     ButtonGroup,
-    Slide
+    Slide,
+    Paper
 } from '@material-ui/core';
 import * as Icon from '@material-ui/icons';
 import BCard from './BCard.js';
@@ -44,7 +45,7 @@ export default function DeckView(props) {
         discreetFlip(() => setTimeout(() => {
             setSlideDirection("left");
             setCardIn(true);
-            setSelectedCard(c => c < lastCard() ? 
+            setSelectedCard(c => c < lastCard() ?
                 c + 1 : lastCard());
         }, 230));
     };
@@ -139,7 +140,7 @@ export default function DeckView(props) {
     });
 
     const controls = (
-        <div className="DeckControls">
+        <React.Fragment>
             <ButtonGroup>
                 <Button
                     variant="contained"
@@ -204,7 +205,7 @@ export default function DeckView(props) {
                     Last
                 </Button>
             </ButtonGroup>
-        </div>
+        </React.Fragment>
     );
 
     useEffect(() => {
@@ -215,49 +216,57 @@ export default function DeckView(props) {
     return (
         <div className="DeckView">
             <div className="CardSpace">
-                <Slide 
+                <Slide
                     in={cardIn}
                     direction={slideDirection}>
                     <div
-                        style={{height: "100%"}}>
-                    <ReactCardFlip
-                        isFlipped={flipped}
-                        flipDirection="vertical"
-                        flipSpeedBackToFront={0.3}
-                        flipSpeedFrontToBack={0.3}
-                    >
-                        <BCard
-                            id={activeId() + "-front"}
-                            flipped={false}
-                            onEditorChange={handleCardChange}
-                            onFlip={handleFlip}
-                            onDuplicate={handleDuplicateCard}
-                            number={displayCard()}
-                            count={props.deck.cards.length}
-                            content={props.deck.cards[selectedCard]?.front}
-                            flagged={props.deck.cards[selectedCard]?.flagged}
-                            onFlag={handleFlagToggle}
-                            flaggedOnly={props.flaggedOnly}
-                        />
-                        <BCard
-                            id={activeId() + "-back"}
-                            flipped={true}
-                            onEditorChange={handleCardChange}
-                            onFlip={handleFlip}
-                            onAddCard={handleAddCard}
-                            onDuplicate={handleDuplicateCard}
-                            number={displayCard()}
-                            count={props.deck.cards.length}
-                            content={props.deck.cards[selectedCard]?.back}
-                            flagged={props.deck.cards[selectedCard]?.flagged}
-                            onFlag={handleFlagToggle}
-                            flaggedOnly={props.flaggedOnly}
-                        />
-                    </ReactCardFlip>
+                        style={{
+                            height: "100%",
+                            width: "100%"
+                        }}>
+                        <ReactCardFlip
+                            isFlipped={flipped}
+                            flipDirection="vertical"
+                            flipSpeedBackToFront={0.3}
+                            flipSpeedFrontToBack={0.3}
+                        >
+                            <BCard
+                                id={activeId() + "-front"}
+                                flipped={false}
+                                onEditorChange={handleCardChange}
+                                onFlip={handleFlip}
+                                onDuplicate={handleDuplicateCard}
+                                number={displayCard()}
+                                count={props.deck.cards.length}
+                                content={props.deck.cards[selectedCard]?.front}
+                                flagged={props.deck.cards[selectedCard]?.flagged}
+                                onFlag={handleFlagToggle}
+                                flaggedOnly={props.flaggedOnly}
+                            />
+                            <BCard
+                                id={activeId() + "-back"}
+                                flipped={true}
+                                onEditorChange={handleCardChange}
+                                onFlip={handleFlip}
+                                onAddCard={handleAddCard}
+                                onDuplicate={handleDuplicateCard}
+                                number={displayCard()}
+                                count={props.deck.cards.length}
+                                content={props.deck.cards[selectedCard]?.back}
+                                flagged={props.deck.cards[selectedCard]?.flagged}
+                                onFlag={handleFlagToggle}
+                                flaggedOnly={props.flaggedOnly}
+                            />
+                        </ReactCardFlip>
                     </div>
                 </Slide>
             </div>
-            {controls}
+            <Paper
+                className="Toolbar"
+                elevation={3}
+            >
+                {controls}
+            </Paper>
         </div>
     );
 }

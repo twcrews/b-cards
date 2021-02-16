@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import * as Material from '@material-ui/core';
 import * as Icon from '@material-ui/icons';
 import './App.css';
-import EmptyState from './components/EmptyState';
 import DeckView from './components/DeckView';
 import { GridView } from './components/GridView';
 
@@ -163,7 +162,7 @@ function App() {
     writeDeck(tmpDeck);
   };
   const handleRenameDeck = (name) => {
-    let tmpDeck = {...deck};
+    let tmpDeck = { ...deck };
     tmpDeck.name = name.substr(0, 20);
     writeDeck(tmpDeck);
   }
@@ -318,13 +317,23 @@ function App() {
   );
 
   const emptyState = (
-    <EmptyState
-      onClick={addDeck}
-      button="New Deck"
-      buttonIcon={<Icon.Add />}
-    >
-      Select a Deck from the drawer to get started.
-    </EmptyState>
+    <div className="EmptyState">
+      <Icon.Search style={{ fontSize: 200 }} />
+      <Material.Typography
+        variant="h6"
+      >
+        You don't have any decks yet.
+      </Material.Typography>
+      <Material.Button
+        variant="contained"
+        onClick={addDeck}
+        color="primary"
+        size="large"
+        startIcon={<Icon.Add />}
+      >
+        New Deck
+      </Material.Button>
+    </div>
   );
 
   const viewContent = (
@@ -431,18 +440,32 @@ function App() {
                       <Icon.Menu />
                     </Material.IconButton>
                   </Material.Tooltip>
-                  <img
-                    src="https://www.crews.dev/b-cards/icons/favicon-128.png"
-                    style={{ height: "48px" }}
-                    alt="b-cards logo"
-                  />
+                  <svg 
+                    id="Layer_1" 
+                    data-name="Layer 1" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 909.4 688.25"
+                    height="40"
+                    width="40"
+                  >
+                    <path 
+                      style={{ fill: "#fff" }} 
+                      d="M44.82,165.12H154.75V396.39c12.48-8.72,53.51-56.91,156.09-56.91,100.43,0,169.25,72.32,169.25,72.32l-45.38,78.65S398.57,449.36,362,439.81c-61.18-16-128.14,3.52-170.91,49.25-42,44.88-49.6,97.87-29.4,160.62,19.6,60.9,74.94,90,140.11,93.27,68.67,3.41,153.1-53,154-163.6C457,437.72,592,322.18,733.56,335.41,843.48,343,919.35,400.65,953.11,493.52a25,25,0,0,1,.95,3.23c-39.13,0-113.67-.29-113.67-.29s-55.6-97.92-172.26-60.59C610.06,454.45,566.22,509.24,566.22,575c0,66.47-10.25,102.51-37.5,149-58.11,99.15-163.57,136-244.39,128.45C150,839.79,67.9,736.2,49.8,645.27c-3-15.17-5-60.47-5-74.3Z" 
+                      transform="translate(-44.82 -165.12)"
+                    />
+                    <path                       
+                      style={{ fill: "#fff" }} 
+                      d="M593.87,684.29c11,10.31,57.78,69.22,129.09,69,74.66-.2,116.34-63.12,116.34-63.12s80.33-.44,114.84.14c2.31,0-50.27,163-232.29,163-121.29,0-186-86.08-186-86.08S592.89,685.89,593.87,684.29Z" 
+                      transform="translate(-44.82 -165.12)"
+                    />
+                  </svg>
                 </div>
               </span>
             </div>
             <div className="EvenFlex">
               <span>
                 <Material.Typography className="TitleText CenteredFlex" variant="h6" noWrap>
-                  {deck ? deck.name || "Untitled" : "No deck loaded"}
+                  {deck ? deck.name || "Untitled" : null}
                 </Material.Typography>
               </span>
             </div>
