@@ -435,14 +435,14 @@ function App() {
 
   const appMenuContent = (
     <div>
-      <Material.Tooltip title="Add Deck">
+      <Material.Tooltip title="Add deck">
         <Material.IconButton
           onClick={handleNewDeck}
         >
           <Icon.AddCircle style={{ color: "#fff" }} />
         </Material.IconButton>
       </Material.Tooltip>
-      <Material.Tooltip title={editing ? "View Deck" : "Edit Deck"}>
+      <Material.Tooltip title={editing ? "View deck" : "Edit deck"}>
         <Material.IconButton
           disabled={!deck}
           onClick={handleToggleEdit}
@@ -453,7 +453,7 @@ function App() {
           }
         </Material.IconButton>
       </Material.Tooltip>
-      <Material.Tooltip title="Rename Deck">
+      <Material.Tooltip title="Rename deck">
         <Material.IconButton
           disabled={!deck}
           onClick={handleRenameDeck}
@@ -461,7 +461,7 @@ function App() {
           <Icon.Spellcheck style={{ color: "#fff" }} />
         </Material.IconButton>
       </Material.Tooltip>
-      <Material.Tooltip title="Duplicate Deck">
+      <Material.Tooltip title="Duplicate deck">
         <Material.IconButton
           disabled={!deck}
           onClick={handleDuplicateDeck}
@@ -469,7 +469,7 @@ function App() {
           <Icon.FilterNone style={{ color: "#fff" }} />
         </Material.IconButton>
       </Material.Tooltip>
-      <Material.Tooltip title="Delete Deck">
+      <Material.Tooltip title="Delete deck">
         <Material.IconButton
           disabled={!deck}
           onClick={handleDeleteDeck}

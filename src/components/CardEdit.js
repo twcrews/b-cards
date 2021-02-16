@@ -7,7 +7,7 @@ export function CardEdit(props) {
     const [focused, setFocused] = useState(null);
 
     const handleEditorChange = (content, _editor, side) => {
-            props.onChange(content, side);
+        props.onChange(content, side);
     };
     const handleFlag = () => { props.onFlag(props.card.id); };
     const handleClear = () => {
@@ -16,9 +16,9 @@ export function CardEdit(props) {
     }
     const handleDelete = () => { props.onDelete(props.card.id); };
     const handleFocus = (side) => { setFocused(side); };
-    const handleBlur = (side) => { 
+    const handleBlur = (side) => {
         if (focused === side) {
-            setFocused(null); 
+            setFocused(null);
         }
     };
     const handleSwap = () => {
@@ -49,18 +49,18 @@ export function CardEdit(props) {
                         >
                             {side.toUpperCase()}
                         </Material.Typography>
-                        <div 
+                        <div
                             className="EditCardContent"
                             onClick={() => handleFocus(side)}
                         >
                             {focused !== side && (!props.card[side] || props.card[side] === "") ?
-                                <Material.Typography 
-                                    variant="h5" 
+                                <Material.Typography
+                                    variant="h5"
                                     className="CenterAbsolute GrayText"
                                 >
                                     No content
-                                </Material.Typography> : 
-                            null }
+                                </Material.Typography> :
+                                null}
                             <Editor
                                 style={{ textAlign: "center" }}
                                 id={props.card.id + "-" + side}
@@ -83,27 +83,35 @@ export function CardEdit(props) {
                 )}
             </div>
             <div className="EditControls">
-                <Material.IconButton
-                    onClick={handleFlag}
-                    className={props.card.flagged ? "FlagButtonActive" : null}
-                >
-                    <Icon.Flag />
-                </Material.IconButton>
-                <Material.IconButton
-                    onClick={handleSwap}
-                >
-                    <Icon.SwapHoriz />
-                </Material.IconButton>
-                <Material.IconButton
-                    onClick={handleClear}
-                >
-                    <Icon.Backspace />
-                </Material.IconButton>
-                <Material.IconButton
-                    onClick={handleDelete}
-                >
-                    <Icon.Delete />
-                </Material.IconButton>
+                <Material.Tooltip title="Flag card">
+                    <Material.IconButton
+                        onClick={handleFlag}
+                        className={props.card.flagged ? "FlagButtonActive" : null}
+                    >
+                        <Icon.Flag />
+                    </Material.IconButton>
+                </Material.Tooltip>
+                <Material.Tooltip title="Swap content">
+                    <Material.IconButton
+                        onClick={handleSwap}
+                    >
+                        <Icon.SwapHoriz />
+                    </Material.IconButton>
+                </Material.Tooltip>
+                <Material.Tooltip title="Clear content">
+                    <Material.IconButton
+                        onClick={handleClear}
+                    >
+                        <Icon.Backspace />
+                    </Material.IconButton>
+                </Material.Tooltip>
+                <Material.Tooltip title="Delete card">
+                    <Material.IconButton
+                        onClick={handleDelete}
+                    >
+                        <Icon.Delete />
+                    </Material.IconButton>
+                </Material.Tooltip> 
             </div>
         </div>
     );

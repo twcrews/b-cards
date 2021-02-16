@@ -58,7 +58,7 @@ export function GridView(props) {
                     variant="contained"
                     color="primary"
                 >
-                    View Cards
+                    View Deck
                 </Button>
             </div>
         </div>);
