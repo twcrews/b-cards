@@ -1,11 +1,12 @@
 html {
-  background: #eee;
   scroll-behavior: smooth;
 }
 
 body {
+  background: #eee;
   margin: 0;
   font-family: Roboto;
+  height: 100vh;
 }
 
 .App {
@@ -252,6 +253,7 @@ body {
 
 #deck-name-input-container {
   margin: 40px auto;
+  text-align: center;
 }
 
 #deck-name-input {

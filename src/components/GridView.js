@@ -31,7 +31,7 @@ export function GridView(props) {
                 .getElementById(props.deck.cards[lastCard].id + "-front")
                 .focus();
         }
-    }, [cardAdded])
+    }, [cardAdded, props.deck.cards]);
 
     return (
         <div style={{ marginBottom: "80px" }}>
