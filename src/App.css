@@ -7,6 +7,16 @@ body {
   font-family: Roboto;
 }
 
+.EvenFlex {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.EvenFlex:first-child > span { margin-right: auto; }
+
+.EvenFlex:last-child  > span { margin-left: auto;  }
+
 .LeftAlign {
   text-align: left;
 }
@@ -86,10 +96,10 @@ body {
   transform: translate(-50%, -50%);
   position: absolute;
   color: rgba(0, 0, 0, 0.3);
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 60px;
-  text-align: center;
-  justify-items: center;
+  align-items: center;
   cursor: default;
 }
 
@@ -106,8 +116,8 @@ body {
   position: absolute;
   height: calc(100% - 64px);
   width: 100%;
-  display: grid;
-  grid-template-rows: 1fr auto;
+  display: flex;
+  flex-direction: column;
   overflow-x: hidden;
 }
 
@@ -119,13 +129,14 @@ body {
 }
 
 .CardSpace {
-  display: grid;
   padding: 20px 80px 0;
+  align-self: stretch;
+  flex-grow: 1;
 }
 
 .Card {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 
@@ -143,6 +154,8 @@ body {
   align-items: center;
   padding: 40px;
   overflow: auto;
+  text-align: center;
+  flex-grow: 1;
 }
 
 .CardContent p {

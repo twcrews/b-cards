@@ -257,10 +257,19 @@ function App() {
   };
   const handleFlaggedOnlyToggle = () => { setFlaggedOnly(f => !f); };
   const handleShuffleToggle = () => { setShuffled(s => !s); };
-  const handleToggleEdit = () => { 
+  const handleToggleEdit = () => {
     setAppMenu(false);
-    setEditing(!editing); 
+    setEditing(!editing);
   };
+  const handleSwapAll = () => {
+    let tmpDeck = { ...deck };
+    tmpDeck.cards.forEach(card => {
+      let tmpContent = card.front;
+      card.front = card.back;
+      card.back = tmpContent;
+    });
+    setDeck(tmpDeck);
+  }
 
   /********** UI CONSTANTS **********/
   const emptyDrawer = (
@@ -415,9 +424,6 @@ function App() {
     deck ?
       <DeckView
         deck={visibleCards()}
-        onCardChange={handleCardChange}
-        onAddCard={handleAddCard}
-        onDeleteCard={handleDeleteCard}
         onFlag={handleFlagToggle}
         onFlaggedOnly={handleFlaggedOnlyToggle}
         onShuffle={handleShuffleToggle}
@@ -429,60 +435,64 @@ function App() {
   const editContent = (
     deck ?
       <GridView
-        deck={visibleCards()}
+        deck={deck}
         onChange={handleCardChange}
         onAddCard={handleAddCard}
         onDeleteCard={handleDeleteCard}
         onFlag={handleFlagToggle}
         onDelete={handleDeleteCard}
+        onSwapAll={handleSwapAll}
+        onViewCards={handleToggleEdit}
       /> : emptyState);
 
   const content = editing ? editContent : viewContent;
 
   const appMenuContent = (
-    <Material.Menu
-      open={appMenu}
-      onClose={handleAppMenuClose}
-      anchorEl={appMenuAnchor}
-    >
-      <Material.MenuItem
-        onClick={handleNewDeck}
-      >
-        <Icon.Add className="GrayText" />
-      Add Deck
-      </Material.MenuItem>
-      <Material.MenuItem
-        disabled={!deck}
-        onClick={handleDuplicateDeck}
-      >
-        <Icon.FilterNone className="GrayText" />
-        Duplicate Deck
-      </Material.MenuItem>
-      <Material.MenuItem
-        disabled={!deck}
-        onClick={handleRenameDeck}
-      >
-        <Icon.Spellcheck className="GrayText" />
-        Rename Deck
-      </Material.MenuItem>
-      <Material.MenuItem
-        disabled={!deck}
-        onClick={handleToggleEdit}
-      >
-      {editing ?
-        <Icon.Slideshow className="GrayText" /> :
-        <Icon.Edit className="GrayText" />
-      }
-      {editing ? "View Deck" : "Edit Deck"}
-      </Material.MenuItem>
-      <Material.MenuItem
-        disabled={!deck}
-        onClick={handleDeleteDeck}
-      >
-        <Icon.Delete className="GrayText" />
-        Delete Deck
-      </Material.MenuItem>
-    </Material.Menu>
+    <div>
+      <Material.Tooltip title="Add Deck">
+        <Material.IconButton
+          onClick={handleNewDeck}
+        >
+          <Icon.AddCircle style={{ color: "#fff" }} />
+        </Material.IconButton>
+      </Material.Tooltip>
+      <Material.Tooltip title={editing ? "View Deck" : "Edit Deck"}>
+        <Material.IconButton
+          disabled={!deck}
+          onClick={handleToggleEdit}
+        >
+          {editing ?
+            <Icon.Slideshow style={{ color: "#fff" }} /> :
+            <Icon.Edit style={{ color: "#fff" }} />
+          }
+        </Material.IconButton>
+      </Material.Tooltip>
+      <Material.Tooltip title="Rename Deck">
+        <Material.IconButton
+          disabled={!deck}
+          onClick={handleRenameDeck}
+        >
+          <Icon.Spellcheck style={{ color: "#fff" }} />
+        </Material.IconButton>
+      </Material.Tooltip>
+      <Material.Tooltip title="Duplicate Deck">
+        <Material.IconButton
+          disabled={!deck}
+          onClick={handleDuplicateDeck}
+        >
+          <Icon.FilterNone style={{ color: "#fff" }} />
+        </Material.IconButton>
+      </Material.Tooltip>
+      <Material.Tooltip title="Delete Deck">
+        <Material.IconButton
+          disabled={!deck}
+          onClick={handleDeleteDeck}
+          edge="end"
+        >
+          <Icon.Delete style={{ color: "#fff" }} />
+        </Material.IconButton>
+      </Material.Tooltip>
+    </div>
   );
 
   /********** RENDER **********/
@@ -491,36 +501,40 @@ function App() {
       <Material.AppBar position="sticky" elevation={3}>
         <Material.Toolbar>
           <div style={{
-            display: "flex", 
-            width: "100%", 
-            justifyContent: "space-between",
+            display: "flex",
+            width: "100%",
             alignItems: "center"
           }}>
-            <div 
-              className="LeftAlign"
-              style={{
-                display: "flex",
-                alignItems: "center"
-              }}
-            >
-              <Material.IconButton edge="start" color="inherit" onClick={handleDrawerOpen}>
-                <Icon.Menu />
-              </Material.IconButton>
-              <span className="TitleText">
-                bCards
+            <div className="EvenFlex">
+              <span>
+                <div
+                  className="LeftAlign"
+                  style={{
+                    display: "flex",
+                    alignItems: "center"
+                  }}
+                >
+                  <Material.IconButton edge="start" color="inherit" onClick={handleDrawerOpen}>
+                    <Icon.Menu />
+                  </Material.IconButton>
+                  <span className="TitleText">
+                    bCards
+                  </span>
+                </div>
               </span>
             </div>
-            <Material.Typography className="TitleText CenterAlign" variant="h6" noWrap>
-              {deck ? deck.name : "No deck loaded"}
-            </Material.Typography>
-            <span className="AutoWidth RightAlign">
-              <Material.IconButton
-                color="inherit"
-                onClick={handleAppMenuOpen}
-              >
-                <Icon.MoreVert />
-              </Material.IconButton>
-            </span>
+            <div className="EvenFlex">
+              <span>
+                <Material.Typography className="TitleText CenteredFlex" variant="h6" noWrap>
+                  {deck ? deck.name : "No deck loaded"}
+                </Material.Typography>
+              </span>
+            </div>
+            <div className="EvenFlex">
+              <span className="AutoWidth RightAlign">
+                {appMenuContent}
+              </span>
+            </div>
           </div>
         </Material.Toolbar>
       </Material.AppBar>
@@ -528,7 +542,6 @@ function App() {
         {content}
       </div>
       <React.Fragment>
-        {appMenuContent}
         <Material.Drawer anchor="left" open={drawer} onClose={handleDrawerClose}>
           {drawerContent}
         </Material.Drawer>

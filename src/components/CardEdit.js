@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import * as Material from '@material-ui/core';
 import * as Icon from '@material-ui/icons';
@@ -27,6 +27,12 @@ export function CardEdit(props) {
         props.onChange(tmpVal, "back");
     }
 
+    useEffect(() => {
+        if (focused) {
+            document.getElementById(props.card.id + "-" + focused).focus();
+        }
+    }, [focused, props.card.id]);
+
     return (
         <div className="EditCardContainer">
             <div id={props.card.id} className="EditCardFlex">
@@ -43,7 +49,18 @@ export function CardEdit(props) {
                         >
                             {side.toUpperCase()}
                         </Material.Typography>
-                        <div className="EditCardContent">
+                        <div 
+                            className="EditCardContent"
+                            onClick={() => handleFocus(side)}
+                        >
+                            {focused !== side && (!props.card[side] || props.card[side] === "") ?
+                                <Material.Typography 
+                                    variant="h5" 
+                                    className="CenterAbsolute GrayText"
+                                >
+                                    No content
+                                </Material.Typography> : 
+                            null }
                             <Editor
                                 style={{ textAlign: "center" }}
                                 id={props.card.id + "-" + side}
@@ -51,7 +68,6 @@ export function CardEdit(props) {
                                 onEditorChange={(content, editor) => handleEditorChange(content, editor, side)}
                                 onKeyDown={(event) => event.stopPropagation()}
                                 onKeyUp={(event) => event.preventDefault()}
-                                onFocus={() => handleFocus(side)}
                                 onBlur={() => handleBlur(side)}
                                 value={props.card[side]}
                                 init={{
@@ -62,14 +78,6 @@ export function CardEdit(props) {
                                     content_style: 'body { font-family: Roboto; font-size: 18pt; text-align: center}'
                                 }}
                             />
-                            {focused !== side && (!props.card[side] || props.card[side] === "") ?
-                                <Material.Typography 
-                                    variant="h5" 
-                                    className="CenterAbsolute GrayText"
-                                >
-                                    No content
-                                </Material.Typography> : 
-                            null }
                         </div>
                     </Material.Card>
                 )}

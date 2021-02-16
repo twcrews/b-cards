@@ -204,15 +204,6 @@ export default function DeckView(props) {
                     Last
                 </Button>
             </ButtonGroup>
-            <Button
-                color="primary"
-                variant="contained"
-                startIcon={<Icon.Add />}
-                onClick={handleAddCard}
-                disabled={props.flaggedOnly}
-            >
-                Add Card
-            </Button>
         </div>
     );
 

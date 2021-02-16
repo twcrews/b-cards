@@ -10,53 +10,50 @@ export default function BCard(props) {
     return (
         <Card elevation={3} square className="Card">
             <div className="CardHeader BorderBox CenterVertical">
-                <div className="LeftAlign">
-                    <Typography variant="h6">
-                        {props.flipped ? "Back" : "Front"}
-                    </Typography>
+                <div className="EvenFlex LeftAlign">
+                    <span>
+                        <Typography variant="subtitle1" className="GrayText">
+                            {props.flipped ? "BACK" : "FRONT"}
+                        </Typography>
+                    </span>
                 </div>
-                <div className="CenterAlign">
-                    <Typography variant="h6">
-                        {props.number + " of " + props.count}
-                    </Typography>
+                <div className="EvenFlex CenterAlign">
+                    <span>
+                        <Typography variant="h6">
+                            {props.number + " of " + props.count}
+                        </Typography>
+                    </span>
                 </div>
-                <div className="RightAlign"/>
+                <div className="EvenFlex RightAlign">
+                    <span>
+                        <Button
+                            className={props.flagged ? "FlagButtonActive" : ""}
+                            variant={props.flagged ? "contained" : "text"}
+                            startIcon={<Icon.Flag color="inherit" />}
+                            onClick={handleFlagToggle}
+                            size="large"
+                            disableElevation
+                        >
+                            {props.flagged ? "Flagged" : "Flag"}
+                        </Button>
+                    </span>
+                </div>
             </div>
             <div className="CardContent">
                 <div>{ReactHtmlParser(props.content)}</div>
             </div>
-            <div className="CardTools CenterVertical BorderBox">
-                <span className="AutoWidth LeftAlign">
-                    <Button
-                        onClick={props.onDuplicate}
-                        size="large"
-                        startIcon={<Icon.FilterNone />}
-                        disabled={props.flaggedOnly}
-                    >
-                        Duplicate
+            <div style={{
+                borderTop: "1px solid #ddd",
+                padding: "20px 40px",
+                textAlign: "center"
+            }}>
+                <Button
+                    onClick={props.onFlip}
+                    startIcon={<Icon.Refresh />}
+                    size="large"
+                >
+                    Flip
                     </Button>
-                </span>
-                <span className="AutoWidth CenterAlign">
-                    <Button
-                        className={props.flagged ? "FlagButtonActive" : ""}
-                        variant={props.flagged ? "contained" : "text"}
-                        startIcon={<Icon.Flag color="inherit" />}
-                        onClick={handleFlagToggle}
-                        size="large"
-                        disableElevation
-                    >
-                        {props.flagged ? "Flagged" : "Flag"}
-                    </Button>
-                </span>
-                <div className="FlexGap RightAlign">
-                    <Button
-                        onClick={props.onFlip}
-                        startIcon={<Icon.Refresh />}
-                        size="large"
-                    >
-                        Flip
-                    </Button>
-                </div>
             </div>
         </Card>
     );
