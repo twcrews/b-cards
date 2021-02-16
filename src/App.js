@@ -351,7 +351,7 @@ function App() {
         <Material.DialogActions>
           <Material.Button onClick={handleRenameDeckDialogClose}>Cancel</Material.Button>
           <Material.Button
-            disabled={!renameDeckName.trim() || renameDeckName === deck.name}
+            disabled={!deck || !renameDeckName.trim() || renameDeckName === deck.name}
             type="submit"
           >
             Rename
