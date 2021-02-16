@@ -17,8 +17,6 @@ function App() {
   const [newDeckName, setNewDeckName] = useState('');
   const [renameDeckName, setRenameDeckName] = useState('');
   const [openNewDeck, setOpenNewDeck] = useState(false);
-  const [appMenu, setAppMenu] = useState(false);
-  const [appMenuAnchor, setAppMenuAnchor] = useState(null);
   const [flaggedOnly, setFlaggedOnly] = useState(false);
   const [shuffled, setShuffled] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -133,11 +131,9 @@ function App() {
   const handleDrawerClose = () => { setDrawer(false); };
   const handleNewDeck = () => {
     setNewDeckDialog(true);
-    setAppMenu(false);
   };
   const handleDuplicateDeck = () => {
     setDuplicateDeckDialog(true);
-    setAppMenu(false);
   };
   const handleNewDeckDialogClose = () => { setNewDeckDialog(false); };
   const handleDuplicateDeckDialogClose = () => { setDuplicateDeckDialog(false); };
@@ -185,7 +181,6 @@ function App() {
     writeDeck(tmpDeck);
   };
   const handleRenameDeck = () => {
-    setAppMenu(false);
     setRenameDeckName(deck.name);
     setRenameDeckDialog(true);
   }
@@ -208,7 +203,6 @@ function App() {
     }
   }
   const handleDeleteDeck = () => {
-    setAppMenu(false);
     setDeleteDeckDialog(true);
   }
   const handleDeleteDeckDialogClose = () => {
@@ -219,11 +213,6 @@ function App() {
     localStorage.removeItem(deck.id);
     setDeck(null);
   };
-  const handleAppMenuOpen = (event) => {
-    setAppMenuAnchor(event.currentTarget);
-    setAppMenu(true);
-  };
-  const handleAppMenuClose = () => { setAppMenu(false); };
   const handleOpenNewDeckChange = () => {
     setOpenNewDeck(!openNewDeck);
   };
@@ -257,10 +246,7 @@ function App() {
   };
   const handleFlaggedOnlyToggle = () => { setFlaggedOnly(f => !f); };
   const handleShuffleToggle = () => { setShuffled(s => !s); };
-  const handleToggleEdit = () => {
-    setAppMenu(false);
-    setEditing(!editing);
-  };
+  const handleToggleEdit = () => { setEditing(!editing); };
   const handleSwapAll = () => {
     let tmpDeck = { ...deck };
     tmpDeck.cards.forEach(card => {
