@@ -448,13 +448,13 @@ function App() {
           onClick={handleToggleEdit}
         >
           {editing ?
-            <Icon.Slideshow style={{ 
+            <Icon.Slideshow style={{
               color: "#fff",
-              opacity: deck ? 1 : 0.5 
+              opacity: deck ? 1 : 0.5
             }} /> :
-            <Icon.Edit style={{ 
+            <Icon.Edit style={{
               color: "#fff",
-              opacity: deck ? 1 : 0.5 
+              opacity: deck ? 1 : 0.5
             }} />
           }
         </Material.IconButton>
@@ -464,10 +464,10 @@ function App() {
           disabled={!deck}
           onClick={handleRenameDeck}
         >
-          <Icon.Spellcheck style={{ 
-              color: "#fff",
-              opacity: deck ? 1 : 0.5 
-            }} />
+          <Icon.Spellcheck style={{
+            color: "#fff",
+            opacity: deck ? 1 : 0.5
+          }} />
         </Material.IconButton>
       </Material.Tooltip>
       <Material.Tooltip title="Duplicate deck">
@@ -475,10 +475,10 @@ function App() {
           disabled={!deck}
           onClick={handleDuplicateDeck}
         >
-          <Icon.FilterNone style={{ 
-              color: "#fff",
-              opacity: deck ? 1 : 0.5 
-            }} />
+          <Icon.FilterNone style={{
+            color: "#fff",
+            opacity: deck ? 1 : 0.5
+          }} />
         </Material.IconButton>
       </Material.Tooltip>
       <Material.Tooltip title="Delete deck">
@@ -487,10 +487,10 @@ function App() {
           onClick={handleDeleteDeck}
           edge="end"
         >
-          <Icon.Delete style={{ 
-              color: "#fff",
-              opacity: deck ? 1 : 0.5 
-            }} />
+          <Icon.Delete style={{
+            color: "#fff",
+            opacity: deck ? 1 : 0.5
+          }} />
         </Material.IconButton>
       </Material.Tooltip>
     </div>
@@ -515,12 +515,16 @@ function App() {
                     alignItems: "center"
                   }}
                 >
-                  <Material.IconButton edge="start" color="inherit" onClick={handleDrawerOpen}>
-                    <Icon.Menu />
-                  </Material.IconButton>
-                  <span className="TitleText">
-                    bCards
-                  </span>
+                  <Material.Tooltip title="View decks">
+                    <Material.IconButton edge="start" color="inherit" onClick={handleDrawerOpen}>
+                      <Icon.Menu />
+                    </Material.IconButton>
+                  </Material.Tooltip>
+                  <img
+                    src="https://www.crews.dev/b-cards/icons/favicon-128.png"
+                    style={{ height: "48px" }}
+                    alt="b-cards logo"
+                  />
                 </div>
               </span>
             </div>
