@@ -10,12 +10,9 @@ function App() {
   /********** STATES **********/
   const [deck, setDeck] = useState(null);
   const [drawer, setDrawer] = useState(false);
-  const [newDeckDialog, setNewDeckDialog] = useState(false);
   const [duplicateDeckDialog, setDuplicateDeckDialog] = useState(false);
-  const [renameDeckDialog, setRenameDeckDialog] = useState(false);
   const [deleteDeckDialog, setDeleteDeckDialog] = useState(false);
   const [newDeckName, setNewDeckName] = useState('');
-  const [renameDeckName, setRenameDeckName] = useState('');
   const [openNewDeck, setOpenNewDeck] = useState(false);
   const [flaggedOnly, setFlaggedOnly] = useState(false);
   const [shuffled, setShuffled] = useState(false);
@@ -26,9 +23,7 @@ function App() {
   const freeView =
     deck &&
     !drawer &&
-    !newDeckDialog &&
     !duplicateDeckDialog &&
-    !renameDeckDialog &&
     !deleteDeckDialog;
 
 
@@ -84,14 +79,12 @@ function App() {
     localStorage.setItem(newDeck.id, JSON.stringify(newDeck));
   };
 
-  const addDeck = (deckName) => {
-    setFlaggedOnly(false);
+  const addDeck = () => {
     var newId = uuid();
     var newObj = {
       name: newId,
       content: {
         id: newId,
-        name: deckName,
         created: new Date(),
         modified: new Date(),
         cards: [
@@ -104,7 +97,7 @@ function App() {
         ]
       }
     }
-    localStorage.setItem(newObj.name, JSON.stringify(newObj.content));
+    localStorage.setItem(newId, JSON.stringify(newObj.content));
     handleDeckSelected(newObj.content);
   };
 
@@ -129,28 +122,14 @@ function App() {
   /********** EVENT HANDLERS **********/
   const handleDrawerOpen = () => { setDrawer(true); };
   const handleDrawerClose = () => { setDrawer(false); };
-  const handleNewDeck = () => {
-    setNewDeckDialog(true);
-  };
   const handleDuplicateDeck = () => {
     setDuplicateDeckDialog(true);
   };
-  const handleNewDeckDialogClose = () => { setNewDeckDialog(false); };
   const handleDuplicateDeckDialogClose = () => { setDuplicateDeckDialog(false); };
   const handleNewDeckNameChange = (event) => {
     var text = event.target.value;
     text = text.substr(0, 20);
     setNewDeckName(text);
-  };
-  const handleNewDeckConfirm = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (newDeckName.trim()) {
-      setEditing(true);
-      setNewDeckDialog(false);
-      addDeck(newDeckName.trim());
-      setNewDeckName('');
-    }
   };
   const handleDuplicateDeckConfirm = (event) => {
     event.preventDefault();
@@ -167,6 +146,9 @@ function App() {
     }
   };
   const handleDeckSelected = (deck) => {
+    setEditing(true);
+    setFlaggedOnly(false);
+    setShuffled(false);
     setDrawer(false);
     setDeck(JSON.parse(localStorage.getItem(deck.id)));
     localStorage.setItem("lastOpen", deck.id);
@@ -180,27 +162,10 @@ function App() {
     }
     writeDeck(tmpDeck);
   };
-  const handleRenameDeck = () => {
-    setRenameDeckName(deck.name);
-    setRenameDeckDialog(true);
-  }
-  const handleRenameDeckDialogClose = () => {
-    setRenameDeckDialog(false);
-  }
-  const handleRenameDeckNameChanged = (event) => {
-    var text = event.target.value;
-    text = text.substr(0, 20);
-    setRenameDeckName(text);
-  }
-  const handleRenameDeckConfirm = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    if (renameDeckName.trim()) {
-      setRenameDeckDialog(false);
-      var newDeck = { ...deck };
-      newDeck.name = renameDeckName.trim();
-      writeDeck(newDeck);
-    }
+  const handleRenameDeck = (name) => {
+    let tmpDeck = {...deck};
+    tmpDeck.name = name.substr(0, 20);
+    writeDeck(tmpDeck);
   }
   const handleDeleteDeck = () => {
     setDeleteDeckDialog(true);
@@ -254,7 +219,7 @@ function App() {
       card.front = card.back;
       card.back = tmpContent;
     });
-    setDeck(tmpDeck);
+    writeDeck(tmpDeck);
   }
 
   /********** UI CONSTANTS **********/
@@ -266,7 +231,9 @@ function App() {
 
   const deleteDeckDialogContent = (
     <Material.Dialog open={deleteDeckDialog} onClose={handleDeleteDeckDialogClose}>
-      <Material.DialogTitle>Delete "{deck ? deck.name : null}"?</Material.DialogTitle>
+      <Material.DialogTitle>
+        Delete "{deck ? deck.name || "Untitled" : null}"?
+      </Material.DialogTitle>
       <Material.DialogContent>
         <Material.DialogContentText>
           This deck will be deleted forever (a really long time).
@@ -279,34 +246,12 @@ function App() {
     </Material.Dialog>
   );
 
-  const newDeckDialogContent = (
-    <Material.Dialog open={newDeckDialog} onClose={handleNewDeckDialogClose}>
-      <form onSubmit={handleNewDeckConfirm}>
-        <Material.DialogTitle>New Deck</Material.DialogTitle>
-        <Material.DialogContent>
-          <Material.TextField
-            autoFocus
-            label="Deck name"
-            value={newDeckName}
-            onChange={handleNewDeckNameChange} />
-        </Material.DialogContent>
-        <Material.DialogActions>
-          <Material.Button onClick={handleNewDeckDialogClose}>Cancel</Material.Button>
-          <Material.Button
-            disabled={!newDeckName.trim()}
-            type="submit"
-          >
-            Add
-            </Material.Button>
-        </Material.DialogActions>
-      </form>
-    </Material.Dialog>
-  );
-
   const duplicateDeckDialogContent = (
     <Material.Dialog open={duplicateDeckDialog} onClose={handleDuplicateDeckDialogClose}>
       <form onSubmit={handleDuplicateDeckConfirm}>
-        <Material.DialogTitle>Duplicate "{deck ? deck.name : null}"</Material.DialogTitle>
+        <Material.DialogTitle>
+          Duplicate "{deck ? deck.name || "Untitled" : null}"
+        </Material.DialogTitle>
         <Material.DialogContent className="DialogGrid">
           <Material.TextField
             autoFocus
@@ -337,30 +282,6 @@ function App() {
     </Material.Dialog>
   );
 
-  const renameDeckDialogContent = (
-    <Material.Dialog open={renameDeckDialog} onClose={handleRenameDeckDialogClose}>
-      <form onSubmit={handleRenameDeckConfirm}>
-        <Material.DialogTitle>Rename Deck</Material.DialogTitle>
-        <Material.DialogContent>
-          <Material.TextField
-            autoFocus
-            label="Deck name"
-            value={renameDeckName}
-            onChange={handleRenameDeckNameChanged} />
-        </Material.DialogContent>
-        <Material.DialogActions>
-          <Material.Button onClick={handleRenameDeckDialogClose}>Cancel</Material.Button>
-          <Material.Button
-            disabled={!deck || !renameDeckName.trim() || renameDeckName === deck.name}
-            type="submit"
-          >
-            Rename
-            </Material.Button>
-        </Material.DialogActions>
-      </form>
-    </Material.Dialog>
-  );
-
   const drawerContent = (
     <div className="Drawer">
       <div className="DeckList">
@@ -375,7 +296,7 @@ function App() {
                   selected={deck ? deck.id === d.id : false}
                 >
                   <Material.ListItemText
-                    primary={d.name}
+                    primary={d.name || "Untitled"}
                     secondary={formattedDate(d.modified)}
                     primaryTypographyProps={{ noWrap: true }}
                   />
@@ -387,7 +308,7 @@ function App() {
         className="DrawerButton"
         disableElevation
         startIcon={<Icon.Add />}
-        onClick={handleNewDeck}
+        onClick={addDeck}
         fullWidth
         variant="contained"
       >
@@ -398,7 +319,7 @@ function App() {
 
   const emptyState = (
     <EmptyState
-      onClick={handleNewDeck}
+      onClick={addDeck}
       button="New Deck"
       buttonIcon={<Icon.Add />}
     >
@@ -429,6 +350,7 @@ function App() {
         onDelete={handleDeleteCard}
         onSwapAll={handleSwapAll}
         onViewCards={handleToggleEdit}
+        onRenameDeck={handleRenameDeck}
       /> : emptyState);
 
   const content = editing ? editContent : viewContent;
@@ -437,7 +359,7 @@ function App() {
     <div>
       <Material.Tooltip title="Add deck">
         <Material.IconButton
-          onClick={handleNewDeck}
+          onClick={addDeck}
         >
           <Icon.AddCircle style={{ color: "#fff" }} />
         </Material.IconButton>
@@ -457,17 +379,6 @@ function App() {
               opacity: deck ? 1 : 0.5
             }} />
           }
-        </Material.IconButton>
-      </Material.Tooltip>
-      <Material.Tooltip title="Rename deck">
-        <Material.IconButton
-          disabled={!deck}
-          onClick={handleRenameDeck}
-        >
-          <Icon.Spellcheck style={{
-            color: "#fff",
-            opacity: deck ? 1 : 0.5
-          }} />
         </Material.IconButton>
       </Material.Tooltip>
       <Material.Tooltip title="Duplicate deck">
@@ -531,7 +442,7 @@ function App() {
             <div className="EvenFlex">
               <span>
                 <Material.Typography className="TitleText CenteredFlex" variant="h6" noWrap>
-                  {deck ? deck.name : "No deck loaded"}
+                  {deck ? deck.name || "Untitled" : "No deck loaded"}
                 </Material.Typography>
               </span>
             </div>
@@ -550,10 +461,8 @@ function App() {
         <Material.Drawer anchor="left" open={drawer} onClose={handleDrawerClose}>
           {drawerContent}
         </Material.Drawer>
-        {newDeckDialogContent}
         {deleteDeckDialogContent}
         {duplicateDeckDialogContent}
-        {renameDeckDialogContent}
       </React.Fragment>
     </div>
   );

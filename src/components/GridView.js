@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardEdit } from './CardEdit';
-import { Button, ButtonGroup } from '@material-ui/core';
+import { Button, ButtonGroup, TextField } from '@material-ui/core';
 import { Add, SwapHoriz, Slideshow } from '@material-ui/icons';
 
 export function GridView(props) {
@@ -12,9 +12,20 @@ export function GridView(props) {
     const handleDelete = (index) => { props.onDelete(index); };
     const handleSwapAll = () => { props.onSwapAll(); };
     const handleViewCards = () => { props.onViewCards(); };
+    const handleRenameDeck = (event) => { props.onRenameDeck(event.target.value); };
 
     return (
         <div style={{ marginBottom: "80px" }}>
+            <div id="deck-name-input-container">
+                <TextField
+                    id="deck-name-input"
+                    value={props.deck.name || ""}
+                    onChange={handleRenameDeck}
+                    variant="outlined"
+                    label="Deck name"
+                    autoFocus={!props.deck.name}
+                />
+            </div>
             {props.deck.cards.map((card, index) =>
                 <CardEdit
                     key={card.id}

@@ -242,6 +242,16 @@ body {
   transform: translate(-50%, -50%);
 }
 
+#deck-name-input-container {
+  margin: 40px auto;
+}
+
+#deck-name-input {
+  font-size: 32px;
+  text-align: center;
+  width: 600px;
+}
+
 @media screen and (max-width: 600px) {
   .Cards {
     padding: 0;
