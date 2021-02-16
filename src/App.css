@@ -272,6 +272,10 @@ body {
   gap: 20px;
 }
 
+#app-menu {
+  display: none;
+}
+
 @media screen and (max-width: 1024px) {
   .EditCardContainer {
     padding: 0 10px;
@@ -301,5 +305,13 @@ body {
 
   .MuiTextField-root {
     width: 100%;
+  }
+
+  #app-menu {
+    display: initial;
+  }
+
+  #app-actions {
+    display: none;
   }
 }

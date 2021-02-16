@@ -16,6 +16,8 @@ function App() {
   const [flaggedOnly, setFlaggedOnly] = useState(false);
   const [shuffled, setShuffled] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [appMenu, setAppMenu] = useState(false);
+  const [appMenuAnchor, setAppMenuAnchor] = useState(null);
 
 
   /********** CONSTANTS **********/
@@ -219,7 +221,12 @@ function App() {
       card.back = tmpContent;
     });
     writeDeck(tmpDeck);
-  }
+  };
+  const handleAppMenuOpen = (event) => {
+    setAppMenuAnchor(event.currentTarget);
+    setAppMenu(true);
+  };
+  const handleAppMenuClose = () => { setAppMenu(false); };
 
   /********** UI CONSTANTS **********/
   const emptyDrawer = (
@@ -364,7 +371,7 @@ function App() {
 
   const content = editing ? editContent : viewContent;
 
-  const appMenuContent = (
+  const appActionsContent = (
     <div>
       <Material.Tooltip title="Add deck">
         <Material.IconButton
@@ -416,6 +423,45 @@ function App() {
     </div>
   );
 
+  const appMenuContent = (    
+  <Material.Menu
+    open={appMenu}
+    onClose={handleAppMenuClose}
+    anchorEl={appMenuAnchor}
+  >
+    <Material.MenuItem
+      onClick={addDeck}
+    >
+      <Icon.Add className="GrayText" />
+    Add deck
+    </Material.MenuItem>
+    <Material.MenuItem
+      disabled={!deck}
+      onClick={handleDuplicateDeck}
+    >
+      <Icon.FilterNone className="GrayText" />
+      Duplicate deck
+    </Material.MenuItem>
+    <Material.MenuItem
+      disabled={!deck}
+      onClick={handleToggleEdit}
+    >
+    {editing ?
+      <Icon.Slideshow className="GrayText" /> :
+      <Icon.Edit className="GrayText" />
+    }
+    {editing ? "View deck" : "Edit deck"}
+    </Material.MenuItem>
+    <Material.MenuItem
+      disabled={!deck}
+      onClick={handleDeleteDeck}
+    >
+      <Icon.Delete className="GrayText" />
+      Delete deck
+    </Material.MenuItem>
+  </Material.Menu>
+  );
+
   /********** RENDER **********/
   return (
     <div className="App">
@@ -450,12 +496,25 @@ function App() {
                   >
                     <path 
                       style={{ fill: "#fff" }} 
-                      d="M44.82,165.12H154.75V396.39c12.48-8.72,53.51-56.91,156.09-56.91,100.43,0,169.25,72.32,169.25,72.32l-45.38,78.65S398.57,449.36,362,439.81c-61.18-16-128.14,3.52-170.91,49.25-42,44.88-49.6,97.87-29.4,160.62,19.6,60.9,74.94,90,140.11,93.27,68.67,3.41,153.1-53,154-163.6C457,437.72,592,322.18,733.56,335.41,843.48,343,919.35,400.65,953.11,493.52a25,25,0,0,1,.95,3.23c-39.13,0-113.67-.29-113.67-.29s-55.6-97.92-172.26-60.59C610.06,454.45,566.22,509.24,566.22,575c0,66.47-10.25,102.51-37.5,149-58.11,99.15-163.57,136-244.39,128.45C150,839.79,67.9,736.2,49.8,645.27c-3-15.17-5-60.47-5-74.3Z" 
+                      d="M44.82,165.12H154.75V396.39c12.48-8.72,53.51-56.91,
+                        156.09-56.91,100.43,0,169.25,72.32,169.25,72.32l-45.38,
+                        78.65S398.57,449.36,362,439.81c-61.18-16-128.14,3.52-170.91,
+                        49.25-42,44.88-49.6,97.87-29.4,160.62,19.6,60.9,74.94,90,
+                        140.11,93.27,68.67,3.41,153.1-53,154-163.6C457,437.72,592,
+                        322.18,733.56,335.41,843.48,343,919.35,400.65,953.11,
+                        493.52a25,25,0,0,1,.95,3.23c-39.13,
+                        0-113.67-.29-113.67-.29s-55.6-97.92-172.26-60.59C610.06,
+                        454.45,566.22,509.24,566.22,575c0,66.47-10.25,102.51-37.5,
+                        149-58.11,99.15-163.57,136-244.39,128.45C150,839.79,67.9,
+                        736.2,49.8,645.27c-3-15.17-5-60.47-5-74.3Z" 
                       transform="translate(-44.82 -165.12)"
                     />
                     <path                       
                       style={{ fill: "#fff" }} 
-                      d="M593.87,684.29c11,10.31,57.78,69.22,129.09,69,74.66-.2,116.34-63.12,116.34-63.12s80.33-.44,114.84.14c2.31,0-50.27,163-232.29,163-121.29,0-186-86.08-186-86.08S592.89,685.89,593.87,684.29Z" 
+                      d="M593.87,684.29c11,10.31,57.78,69.22,129.09,69,74.66-.2,
+                        116.34-63.12,116.34-63.12s80.33-.44,114.84.14c2.31,0-50.27,
+                        163-232.29,163-121.29,0-186-86.08-186-86.08S592.89,685.89,
+                        593.87,684.29Z" 
                       transform="translate(-44.82 -165.12)"
                     />
                   </svg>
@@ -471,7 +530,18 @@ function App() {
             </div>
             <div className="EvenFlex">
               <span className="AutoWidth RightAlign">
-                {appMenuContent}
+                <span id="app-actions">
+                  {appActionsContent}
+                </span>
+                <span>
+                  <Material.IconButton
+                    id="app-menu"
+                    onClick={handleAppMenuOpen}
+                    edge="end"
+                  >
+                    <Icon.MoreVert />
+                  </Material.IconButton>
+                </span>
               </span>
             </div>
           </div>
@@ -486,6 +556,7 @@ function App() {
         </Material.Drawer>
         {deleteDeckDialogContent}
         {duplicateDeckDialogContent}
+        {appMenuContent}
       </React.Fragment>
     </div>
   );
