@@ -3,7 +3,7 @@ import { CardEdit } from './CardEdit';
 import { Button, ButtonGroup, TextField, Paper} from '@material-ui/core';
 import { Add, SwapHoriz, Slideshow } from '@material-ui/icons';
 
-export function GridView(props) {
+export default function GridView(props) {
     const [cardAdded, setCardAdded] = useState(false);
 
     const handleCardChange = (content, id, side) => {
