@@ -58,6 +58,7 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
   height: 100%;
+  text-align: center;
 }
 
 .TitleText {
@@ -105,6 +106,7 @@ body {
   display: grid;
   grid-gap: 40px;
   justify-items: center;
+  text-align: center;
   cursor: default;
 }
 
@@ -272,6 +274,60 @@ body {
   gap: 20px;
 }
 
+#app-menu {
+  display: none;
+}
+
+.DashView {
+  padding-top: 20px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.DashCardContainer {
+  cursor: pointer;
+  width: 380px;
+  padding: 20px;
+  box-sizing: border-box;
+  border-radius: 15px;
+  transition: background-color 0.1s ease-in-out;
+}
+
+.DashCardContainer:hover {
+  background-color: #ddd;
+}
+
+.DashCard {
+  height: 200px;
+  margin-bottom: 20px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.DashCard p {
+  font-size: 18pt;
+}
+
+.DashNewCard {
+  border: 5px dashed #aaa;
+  height: 200px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@media screen and (max-width: 1180px) {
+  .DashView {
+    max-width: 800px;
+  }
+}
+
 @media screen and (max-width: 1024px) {
   .EditCardContainer {
     padding: 0 10px;
@@ -279,6 +335,12 @@ body {
 
   .EditCardFlex {
     gap: 10px;
+  }
+}
+
+@media screen and (max-width: 780px) {
+  .DashView {
+    max-width: 400px;
   }
 }
 
@@ -301,5 +363,33 @@ body {
 
   .MuiTextField-root {
     width: 100%;
+  }
+
+  #app-menu {
+    display: initial;
+  }
+
+  #app-actions {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .DashView {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    width: 100%;
+    max-width: unset;
+  }
+
+  .DashCardContainer {
+    padding: 10px 0;
+    width: 100%;
+  }
+
+  .DashNewCard {
+    margin: 0 20px;
   }
 }
