@@ -103,19 +103,24 @@ function App() {
     }
     localStorage.setItem(newId, JSON.stringify(newObj.content));
     handleDeckSelected(newObj.content);
+    setAppMenu(false);
   };
 
   const visibleCards = () => {
-    var visibleDeck = { ...deck }
-    if (flaggedOnly) {
-      visibleDeck.cards = deck.cards.filter(c =>
-        c.flagged);
+    if (deck) {
+      let visibleDeck = { ...deck }
+      if (flaggedOnly) {
+        visibleDeck.cards = deck.cards.filter(c =>
+          c.flagged);
+      }
+      if (shuffled) {
+        let cards = [...visibleDeck.cards];
+        visibleDeck.cards = shuffle(cards);
+      }
+      return visibleDeck;
+    } else {
+      return null;
     }
-    if (shuffled) {
-      var cards = [...visibleDeck.cards];
-      visibleDeck.cards = shuffle(cards);
-    }
-    return visibleDeck;
   };
 
   /********** EVENT HANDLERS **********/
@@ -123,6 +128,7 @@ function App() {
   const handleDrawerClose = () => { setDrawer(false); };
   const handleDuplicateDeck = () => {
     setDuplicateDeckDialog(true);
+    setAppMenu(false);
   };
   const handleDuplicateDeckDialogClose = () => { setDuplicateDeckDialog(false); };
   const handleNewDeckNameChange = (event) => {
@@ -167,6 +173,7 @@ function App() {
   }
   const handleDeleteDeck = () => {
     setDeleteDeckDialog(true);
+    setAppMenu(false);
   }
   const handleDeleteDeckDialogClose = () => {
     setDeleteDeckDialog(false);
@@ -209,7 +216,10 @@ function App() {
   };
   const handleFlaggedOnlyToggle = () => { setFlaggedOnly(f => !f); };
   const handleShuffleToggle = () => { setShuffled(s => !s); };
-  const handleToggleEdit = () => { setEditing(!editing); };
+  const handleToggleEdit = () => { 
+    setEditing(!editing);
+    setAppMenu(false); 
+  };
   const handleSwapAll = () => {
     let tmpDeck = { ...deck };
     tmpDeck.cards.forEach(card => {
@@ -224,6 +234,7 @@ function App() {
     setAppMenu(true);
   };
   const handleAppMenuClose = () => { setAppMenu(false); };
+  const handleHome = () => { setDeck(null); };
 
   /********** UI CONSTANTS **********/
   const emptyDrawer = (
@@ -375,8 +386,8 @@ function App() {
   const content = deck ?
     editing ? editContent : viewContent :
     allStorage() && allStorage().length > 0 ?
-      (<DashView 
-        decks={allStorage()} 
+      (<DashView
+        decks={allStorage()}
         onSelect={handleDeckSelected}
         onNewDeck={addDeck}
       />) : emptyState;
@@ -447,13 +458,6 @@ function App() {
     </Material.MenuItem>
       <Material.MenuItem
         disabled={!deck}
-        onClick={handleDuplicateDeck}
-      >
-        <Icon.FilterNone className="GrayText" />
-      Duplicate deck
-    </Material.MenuItem>
-      <Material.MenuItem
-        disabled={!deck}
         onClick={handleToggleEdit}
       >
         {editing ?
@@ -462,6 +466,13 @@ function App() {
         }
         {editing ? "View deck" : "Edit deck"}
       </Material.MenuItem>
+      <Material.MenuItem
+        disabled={!deck}
+        onClick={handleDuplicateDeck}
+      >
+        <Icon.FilterNone className="GrayText" />
+      Duplicate deck
+    </Material.MenuItem>
       <Material.MenuItem
         disabled={!deck}
         onClick={handleDeleteDeck}
@@ -497,12 +508,14 @@ function App() {
                     </Material.IconButton>
                   </Material.Tooltip>
                   <svg
-                    id="Layer_1"
-                    data-name="Layer 1"
+                    id="header-logo"
+                    data-name="header-logo"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 909.4 688.25"
                     height="40"
                     width="40"
+                    style={{ cursor: "pointer" }}
+                    onClick={handleHome}
                   >
                     <path
                       style={{ fill: "#fff" }}
